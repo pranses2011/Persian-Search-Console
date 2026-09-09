@@ -4,7 +4,10 @@
 // ============================================================
 
 import { seeded, daysAgo, hashString } from "./mock-engine";
-import type { InspectionResult, IndexingResponse, IndexingCategory } from "@/lib/types";
+import type {
+  InspectionResult, IndexingResponse, IndexingCategory,
+  MobileResponse, MobileIssue, SitemapItem,
+} from "@/lib/types";
 
 // ------------------------------------------------------------
 // ۳.۲ — بازرسی URL
@@ -267,4 +270,196 @@ export function mockIndexing(site: string): IndexingResponse {
   }
 
   return { total, indexed, notIndexed, categories, trend, demo: true };
+}
+
+// ------------------------------------------------------------
+// ۳.۴ — قابلیت استفاده در موبایل
+// ------------------------------------------------------------
+
+/** گزارش مشکلات موبایل قطعی برای سایت */
+export function mockMobile(site: string): MobileResponse {
+  const rnd = seeded(site, 30);
+
+  const issues: MobileIssue[] = [
+    {
+      id: "small-text",
+      type: "TEXT_TOO_SMALL",
+      title: "متن خیلی کوچک است",
+      count: 4 + Math.floor(rnd() * 18),
+      severity: "error",
+      description:
+        "بیشترِ متن‌های این صفحات در موبایل خیلی ریز هستند و کاربر برای خواندن باید بزرگ‌نمایی کند. فونت کمتر از ۱۲ پیکسل معمولاً مشکل‌ساز است.",
+      solution:
+        "اندازه فونت متن اصلی را در موبایل حداقل ۱۶ پیکسل کنید. اگر از CSS جدا برای موبایل دارید، اندازه‌ها را بازبینی کنید.",
+      sampleUrls: ["/blog/old-post-12", "/about-us", "/blog/tag/history"],
+    },
+    {
+      id: "tap-elements",
+      type: "CLICKABLE_ELEMENTS_TOO_CLOSE",
+      title: "عناصر کلیک نزدیک هم هستند",
+      count: 2 + Math.floor(rnd() * 12),
+      severity: "error",
+      description:
+        "دکمه‌ها یا لینک‌های خیلی نزدیک به هم باعث می‌شوند کاربر در موبایل اشتباهی روی گزینه دیگری کلیک کند.",
+      solution:
+        "فاصله حداقل ۴۸ پیکسل بین عناصر قابل کلیک رعایت کنید؛ منوهای موبایل را بزرگ‌تر و با فاصله طراحی کنید.",
+      sampleUrls: ["/shop/", "/blog/category/tech"],
+    },
+    {
+      id: "wide-content",
+      type: "CONTENT_WIDER_THAN_SCREEN",
+      title: "محتوا از عرض صفحه بیرون زده",
+      count: 1 + Math.floor(rnd() * 9),
+      severity: "error",
+      description:
+        "بخشی از محتوا (مثل تصویر بزرگ یا جدول عریض) از لبه صفحه موبایل بیرون می‌زند و کاربر مجبور به اسکرول افقی می‌شود.",
+      solution:
+        "به تصاویر استایل max-width:100% بدهید؛ جدول‌های عریض را در قاب اسکرول‌دار قرار دهید؛ از اعداد ثابت پیکسلی در CSS پرهیز کنید.",
+      sampleUrls: ["/blog/pricing-2024", "/products/compare-table"],
+    },
+    {
+      id: "viewport",
+      type: "VIEWPORT_NOT_SET",
+      title: "viewport تنظیم نشده است",
+      count: Math.floor(rnd() * 3),
+      severity: "warning",
+      description:
+        "برچسب viewport در این صفحات تعریف نشده و مرورگر موبایل صفحه را مثل دسکتاپ کوچک نمایش می‌دهد.",
+      solution:
+        "تگ <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> را به بخش head همه صفحات اضافه کنید.",
+      sampleUrls: ["/legacy-page"],
+    },
+  ].filter((i) => i.count > 0);
+
+  // روند مشکلات (کاهش تدریجی با اصلاح)
+  const trend: { date: string; errors: number }[] = [];
+  const base = issues.reduce((a, i) => a + i.count, 0) || 8;
+  for (let m = 12; m >= 0; m--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - m);
+    trend.push({
+      date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`,
+      errors: Math.max(0, Math.round(base * (1.6 - ((12 - m) / 12) * 0.6))),
+    });
+  }
+
+  return { issues, trend, demo: true };
+}
+
+// ------------------------------------------------------------
+// ۳.۵ — نقشه‌های سایت (با حالت تعاملی برای دمو)
+// ------------------------------------------------------------
+
+// حافظه سرور برای تغییرات نقشه سایت در حالت دمو
+const demoSitemapStore = new Map<string, { added: SitemapItem[]; removed: string[] }>();
+
+/** لیست نقشه‌های سایت (قطعی + تغییرات کاربر در دمو) */
+export function mockSitemaps(site: string): SitemapItem[] {
+  const rnd = seeded(site, 40);
+  const domain = site.replace("sc-domain:", "").replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+  const base: SitemapItem[] = [
+    {
+      path: `https://${domain}/sitemap.xml`,
+      lastSubmitted: daysAgo(2),
+      lastDownloaded: daysAgo(1),
+      isPending: false,
+      isWmProcessed: true,
+      type: "sitemap",
+      errors: 0,
+      warnings: 0,
+      urlCount: 1240,
+      contents: [{ type: "web", submitted: 1240, indexed: 1039 }],
+    },
+    {
+      path: `https://${domain}/sitemap-posts.xml`,
+      lastSubmitted: daysAgo(2),
+      lastDownloaded: daysAgo(2),
+      isPending: false,
+      isWmProcessed: true,
+      type: "sitemap",
+      errors: 0,
+      warnings: 3,
+      urlCount: 486,
+      contents: [{ type: "web", submitted: 486, indexed: 451 }],
+    },
+    {
+      path: `https://${domain}/sitemap-products.xml`,
+      lastSubmitted: daysAgo(9),
+      lastDownloaded: daysAgo(8),
+      isPending: false,
+      isWmProcessed: true,
+      type: "sitemap",
+      errors: 4,
+      warnings: 11,
+      urlCount: 320,
+      contents: [{ type: "web", submitted: 320, indexed: 243 }],
+    },
+    {
+      path: `https://${domain}/sitemap-images.xml`,
+      lastSubmitted: daysAgo(15),
+      lastDownloaded: daysAgo(14),
+      isPending: false,
+      isWmProcessed: true,
+      type: "sitemap",
+      errors: 0,
+      warnings: 0,
+      urlCount: 2100,
+      contents: [{ type: "image", submitted: 2100, indexed: 1930 }],
+    },
+  ];
+
+  if (rnd() > 0.5) {
+    base.push({
+      path: `https://${domain}/sitemap-videos.xml`,
+      lastSubmitted: daysAgo(30),
+      lastDownloaded: null,
+      isPending: true,
+      isWmProcessed: false,
+      type: "sitemap",
+      errors: null,
+      warnings: null,
+      urlCount: null,
+      contents: [],
+    });
+  }
+
+  // اعمال تغییرات کاربر (دمو)
+  const changes = demoSitemapStore.get(site);
+  if (changes) {
+    const filtered = base.filter(
+      (s) => !changes.removed.includes(s.path)
+    );
+    return [...changes.added, ...filtered];
+  }
+  return base;
+}
+
+/** ارسال نقشه سایت جدید در حالت دمو */
+export function demoAddSitemap(site: string, feedpath: string): SitemapItem {
+  const store = demoSitemapStore.get(site) ?? { added: [], removed: [] };
+  const item: SitemapItem = {
+    path: feedpath,
+    lastSubmitted: daysAgo(0),
+    lastDownloaded: null,
+    isPending: true,
+    isWmProcessed: false,
+    type: "sitemap",
+    errors: null,
+    warnings: null,
+    urlCount: null,
+    contents: [],
+  };
+  store.added = [item, ...store.added.filter((a) => a.path !== feedpath)];
+  store.removed = store.removed.filter((p) => p !== feedpath);
+  demoSitemapStore.set(site, store);
+  return item;
+}
+
+/** حذف نقشه سایت در حالت دمو */
+export function demoRemoveSitemap(site: string, feedpath: string) {
+  const store = demoSitemapStore.get(site) ?? { added: [], removed: [] };
+  store.added = store.added.filter((a) => a.path !== feedpath);
+  store.removed = [...store.removed, feedpath];
+  demoSitemapStore.set(site, store);
 }

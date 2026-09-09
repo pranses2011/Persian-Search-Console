@@ -21,6 +21,8 @@ import { DateRangeBar } from "./overview/date-range-bar";
 import { OverviewSection } from "./overview/overview-section";
 import { InspectionSection } from "./inspection-section";
 import { IndexingSection } from "./indexing-section";
+import { MobileSection } from "./mobile-section";
+import { SitemapsSection } from "./sitemaps-section";
 import { ArrowRight, Menu, ChevronDown, Globe, FileQuestion } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { GscSite } from "@/lib/types";
@@ -105,7 +107,9 @@ export function DashboardView() {
       case "indexing":
         return <IndexingSection />;
       case "mobile":
+        return <MobileSection />;
       case "sitemaps":
+        return <SitemapsSection />;
       case "security":
       case "rich-results":
       case "links":
