@@ -8,6 +8,7 @@ import * as React from "react";
 import { Search } from "lucide-react";
 import { UserMenu } from "@/components/layout/user-menu";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { GuideDialog } from "@/components/layout/guide-dialog";
 import { useAppStore } from "@/store/app-store";
 import { toFaDigits } from "@/lib/format";
 
@@ -33,8 +34,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          {/* سمت دیگر هدر: تم + کاربر */}
+          {/* سمت دیگر هدر: راهنما + تم + کاربر */}
           <div className="flex items-center gap-1.5">
+            {user && <GuideDialog />}
             <ThemeToggle />
             {user && <UserMenu />}
           </div>
