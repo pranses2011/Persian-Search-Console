@@ -463,3 +463,187 @@ export function demoRemoveSitemap(site: string, feedpath: string) {
   store.removed = [...store.removed, feedpath];
   demoSitemapStore.set(site, store);
 }
+
+// ------------------------------------------------------------
+// ۳.۶ — امنیت و اقدامات دستی
+// ------------------------------------------------------------
+
+import type { SecurityResponse } from "@/lib/types";
+
+/** گزارش امنیت و پنالتی قطعی برای سایت */
+export function mockSecurity(site: string): SecurityResponse {
+  const rnd = seeded(site, 50);
+
+  // ۷۰٪ سایت‌ها پاک هستند — اما هر سایت قطعی نتیجه خودش را دارد
+  const hasManualAction = rnd() < 0.3;
+  const hasSecurityIssue = rnd() < 0.2;
+
+  const manualActions = hasManualAction
+    ? [
+        {
+          id: "ma-unnatural-links",
+          type: "UNNATURAL_LINKS",
+          title: "لینک‌های غیرطبیعی به سایت شما",
+          reason:
+            "گوگل تشخیص داده که الگویی از لینک‌های خریداری‌شده یا ردیفی (به‌صورت دسته‌ای ساخت) به سایت شما داده شده تا رتبه‌تان را بالا ببرد. این کار خلاف قوانین گوگل است.",
+          affectedPages: ["صفحه اصلی و چند صفحه دسته‌بندی"],
+          fixGuide:
+            "لینک‌های اسپم را تا جایی که می‌توانید حذف کنید؛ برای بقیه از ابزار Disavow گوگل استفاده کنید و بعد درخواست بازبینی (Request Review) بدهید.",
+          severity: "critical" as const,
+        },
+      ]
+    : [];
+
+  const securityIssues = hasSecurityIssue
+    ? [
+        {
+          id: "sec-deceptive",
+          type: "SOCIAL_ENGINEERING",
+          title: "محتوای فریبنده (Social Engineering)",
+          details:
+            "گوشه‌ای از سایت شما حاوی محتوایی است که کاربران را گمراه می‌کند؛ مثلاً دکمه دانلود جعلی یا پیام فریبنده «دستگاه شما آلوده است».",
+          affectedPages: ["/download-page", "/popup-ad-landing"],
+          severity: "critical" as const,
+        },
+      ]
+    : [];
+
+  return { manualActions, securityIssues, demo: true };
+}
+
+// ------------------------------------------------------------
+// ۳.۷ — نتایج غنی (Rich Results)
+// ------------------------------------------------------------
+
+import type { RichResultsResponse, RichResultType } from "@/lib/types";
+
+/** گزارش نتایج غنی قطعی برای سایت */
+export function mockRichResults(site: string): RichResultsResponse {
+  const rnd = seeded(site, 60);
+
+  // انواع نتایج غنی با داده فارسی
+  const types: RichResultType[] = [
+    {
+      id: "faq",
+      type: "FAQ",
+      title: "سوالات متداول (FAQ)",
+      valid: 40 + Math.floor(rnd() * 60),
+      warnings: Math.floor(rnd() * 8),
+      errors: Math.floor(rnd() * 5),
+      trend: [],
+      problemPages: [
+        { url: "/blog/faq-shipping", issue: "فیلد answer خالی است" },
+        { url: "/faq/returns", issue: "قالب JSON-LD نامعتبر" },
+      ],
+    },
+    {
+      id: "articles",
+      type: "ARTICLES",
+      title: "مقاله‌ها (Article)",
+      valid: 80 + Math.floor(rnd() * 120),
+      warnings: Math.floor(rnd() * 12),
+      errors: Math.floor(rnd() * 7),
+      trend: [],
+      problemPages: [
+        { url: "/blog/seo-guide", issue: "تاریخ انتشار (datePublished) قدیمی است" },
+        { url: "/blog/news-1404", issue: "headline طولانی‌تر از حد مجاز است" },
+      ],
+    },
+    {
+      id: "products",
+      type: "PRODUCTS",
+      title: "محصولات (Product)",
+      valid: 20 + Math.floor(rnd() * 50),
+      warnings: Math.floor(rnd() * 10),
+      errors: Math.floor(rnd() * 9),
+      trend: [],
+      problemPages: [
+        { url: "/product/laptop-x", issue: "قیمت (price) تعریف نشده" },
+        { url: "/product/phone-y", issue: "تصویر محصول نامعتبر" },
+      ],
+    },
+    {
+      id: "breadcrumb",
+      type: "BREADCRUMBS",
+      title: "مسیر راهنما (Breadcrumb)",
+      valid: 120 + Math.floor(rnd() * 180),
+      warnings: Math.floor(rnd() * 6),
+      errors: Math.floor(rnd() * 4),
+      trend: [],
+      problemPages: [{ url: "/shop/category/3", issue: "آخرین مسیر با URL صفحه یکی نیست" }],
+    },
+    {
+      id: "reviews",
+      type: "REVIEWS",
+      title: "نظرات و امتیاز (Review)",
+      valid: 10 + Math.floor(rnd() * 30),
+      warnings: Math.floor(rnd() * 5),
+      errors: Math.floor(rnd() * 6),
+      trend: [],
+      problemPages: [{ url: "/product/laptop-x#reviews", issue: "امتیاز خارج از بازه ۱ تا ۵" }],
+    },
+    {
+      id: "videos",
+      type: "VIDEOS",
+      title: "ویدیوها (Video)",
+      valid: 5 + Math.floor(rnd() * 20),
+      warnings: Math.floor(rnd() * 4),
+      errors: Math.floor(rnd() * 3),
+      trend: [],
+      problemPages: [{ url: "/video/tutorial-1", issue: "thumbnail (تصویر پیش‌نمایش) یافت نشد" }],
+    },
+    {
+      id: "howto",
+      type: "HOWTO",
+      title: "آموزش قدم‌به‌قدم (How-to)",
+      valid: Math.floor(rnd() * 15),
+      warnings: Math.floor(rnd() * 3),
+      errors: Math.floor(rnd() * 2),
+      trend: [],
+      problemPages: [],
+    },
+    {
+      id: "events",
+      type: "EVENTS",
+      title: "رویدادها (Event)",
+      valid: Math.floor(rnd() * 8),
+      warnings: 0,
+      errors: Math.floor(rnd() * 2),
+      trend: [],
+      problemPages: [],
+    },
+    {
+      id: "recipes",
+      type: "RECIPES",
+      title: "دستور پخت (Recipe)",
+      valid: Math.floor(rnd() * 6),
+      warnings: 0,
+      errors: 0,
+      trend: [],
+      problemPages: [],
+    },
+  ].filter((t) => t.valid + t.warnings + t.errors > 0);
+
+  // روند ۱۲ ماهه برای مجموع
+  const totalValid = types.reduce((a, t) => a + t.valid, 0);
+  const totalErrors = types.reduce((a, t) => a + t.errors, 0);
+  const totalWarnings = types.reduce((a, t) => a + t.warnings, 0);
+
+  for (const t of types) {
+    const trend: RichResultType["trend"] = [];
+    for (let m = 12; m >= 0; m--) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - m);
+      const progress = (12 - m) / 12;
+      trend.push({
+        date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`,
+        valid: Math.round(t.valid * (0.6 + progress * 0.4)),
+        errors: Math.round(t.errors * (1.5 - progress * 0.5)),
+        warnings: Math.round(t.warnings * (1.3 - progress * 0.3)),
+      });
+    }
+    t.trend = trend;
+  }
+
+  return { types, demo: true };
+}

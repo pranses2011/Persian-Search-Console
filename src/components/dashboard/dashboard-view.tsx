@@ -23,6 +23,8 @@ import { InspectionSection } from "./inspection-section";
 import { IndexingSection } from "./indexing-section";
 import { MobileSection } from "./mobile-section";
 import { SitemapsSection } from "./sitemaps-section";
+import { SecuritySection } from "./security-section";
+import { RichResultsSection } from "./rich-results-section";
 import { ArrowRight, Menu, ChevronDown, Globe, FileQuestion } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { GscSite } from "@/lib/types";
@@ -111,7 +113,9 @@ export function DashboardView() {
       case "sitemaps":
         return <SitemapsSection />;
       case "security":
+        return <SecuritySection />;
       case "rich-results":
+        return <RichResultsSection />;
       case "links":
       case "vitals":
       case "removals":
