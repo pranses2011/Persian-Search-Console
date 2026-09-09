@@ -25,21 +25,12 @@ import { MobileSection } from "./mobile-section";
 import { SitemapsSection } from "./sitemaps-section";
 import { SecuritySection } from "./security-section";
 import { RichResultsSection } from "./rich-results-section";
-import { ArrowRight, Menu, ChevronDown, Globe, FileQuestion } from "lucide-react";
+import { LinksSection } from "./links-section";
+import { VitalsSection } from "./vitals-section";
+import { RemovalsSection } from "./removals-section";
+import { ArrowRight, Menu, ChevronDown, Globe } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { GscSite } from "@/lib/types";
-
-// محتوای بخش‌های در حال ساخت (تا کامیت‌های بعدی جایگزین می‌شوند)
-function PendingSection({ id }: { id: SectionId }) {
-  const label = SECTIONS.find((s) => s.id === id)?.label ?? id;
-  return (
-    <div className="min-h-96 flex flex-col items-center justify-center text-center gap-3 text-muted-foreground py-16 border rounded-2xl border-dashed">
-      <FileQuestion className="w-10 h-10 opacity-40" />
-      <p className="font-medium">{label}</p>
-      <p className="text-sm">این بخش در کامیت بعدی اضافه می‌شود</p>
-    </div>
-  );
-}
 
 // نوار بالای داشبورد: انتخاب سایت + بازه زمانی
 function DashboardTopBar() {
@@ -117,9 +108,11 @@ export function DashboardView() {
       case "rich-results":
         return <RichResultsSection />;
       case "links":
+        return <LinksSection />;
       case "vitals":
+        return <VitalsSection />;
       case "removals":
-        return <PendingSection id={section} />;
+        return <RemovalsSection />;
       default:
         return <OverviewSection />;
     }

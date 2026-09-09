@@ -647,3 +647,229 @@ export function mockRichResults(site: string): RichResultsResponse {
 
   return { types, demo: true };
 }
+
+// ------------------------------------------------------------
+// ۳.۸ — لینک‌ها (داخلی و خارجی)
+// ------------------------------------------------------------
+
+import type { LinksResponse, LinkRow } from "@/lib/types";
+
+/** ساخت ردیف‌های لینک قطعی */
+function linkRows(seedKey: string, items: string[], min: number, max: number): LinkRow[] {
+  return items
+    .map((item, i) => {
+      const rnd = seeded(seedKey + ":" + i, 70);
+      return { key: item, value: min + Math.floor(rnd() * (max - min)) };
+    })
+    .sort((a, b) => b.value - a.value);
+}
+
+/** گزارش لینک‌ها قطعی برای سایت */
+export function mockLinks(site: string): LinksResponse {
+  const domain = site.replace("sc-domain:", "");
+
+  // سایت‌های لینک‌دهنده خارجی
+  const referringSites = [
+    "reddit.com", "quora.com", "medium.com", "virgool.io",
+    "aparat.com", "github.io", "stackoverflow.com", "wordpress.com",
+    "blog.ir", "dev.to", "linkedin.com", "telegram.me",
+    "digiato.com", "zoomit.ir", "khabaronline.ir",
+  ];
+  // صفحات با بیشترین بک‌لینک
+  const linkedPages = [
+    "/blog/seo-guide", "/blog/python-tutorial", "/",
+    "/blog/decoration-ideas", "/blog/telegram-bot",
+    "/shop/laptops", "/blog/travel-shiraz", "/blog/recipes",
+  ];
+  // متن‌های انکر (Anchor)
+  const anchorTexts = [
+    "اینجا را ببینید", "منبع", "برای اطلاعات بیشتر",
+    "راهنمای کامل سئو", "آموزش پایتون", "کلیک کنید",
+    site.replace("sc-domain:", ""), "وبسایت رسمی", "مقاله جذاب",
+  ];
+  // صفحات با بیشترین لینک داخلی
+  const internalPages = [
+    "/blog/seo-guide", "/", "/blog/", "/shop/",
+    "/blog/python-tutorial", "/faq", "/about-us", "/blog/recipes",
+  ];
+
+  const rnd = seeded(site, 80);
+
+  return {
+    external: {
+      topLinkingSites: linkRows(site + ":es", referringSites, 3, 340),
+      topLinkedPages: linkRows(site + ":ep", linkedPages, 12, 850),
+      topAnchorTexts: linkRows(site + ":ea", anchorTexts, 5, 420),
+      totalBacklinks: 1400 + Math.floor(rnd() * 3600),
+      totalReferringDomains: 80 + Math.floor(rnd() * 240),
+    },
+    internal: {
+      topLinkedPages: linkRows(site + ":ip", internalPages, 30, 900),
+      totalLinks: 8000 + Math.floor(rnd() * 12000),
+    },
+    demo: true,
+  };
+}
+
+// ------------------------------------------------------------
+// ۳.۹ — Core Web Vitals / Page Experience
+// ------------------------------------------------------------
+
+import type { VitalsResponse, VitalMetric } from "@/lib/types";
+
+/** گزارش Core Web Vitals قطعی برای سایت */
+export function mockVitals(site: string): VitalsResponse {
+  const rnd = seeded(site, 90);
+
+  // مقادیر واقع‌گرایانه: LCP میلی‌ثانیه، INP میلی‌ثانیه، CLS بدون واحد
+  const lcpValue = 1800 + Math.floor(rnd() * 2200); // 1.8 تا 4 ثانیه
+  const inpValue = 120 + Math.floor(rnd() * 330); // 120 تا 450ms
+  const clsValue = 0.05 + rnd() * 0.2; // 0.05 تا 0.25
+
+  // دسته‌بندی بر اساس آستانه‌های رسمی گوگل
+  function classify(id: string, v: number): "good" | "ni" | "poor" {
+    if (id === "LCP") return v <= 2500 ? "good" : v <= 4000 ? "ni" : "poor";
+    if (id === "INP") return v <= 200 ? "good" : v <= 500 ? "ni" : "poor";
+    return v <= 0.1 ? "good" : v <= 0.25 ? "ni" : "poor";
+  }
+
+  // توزیع ترافیک بین سه وضعیت (جمع = ۱۰۰)
+  function distribution(id: string, v: number): [number, number, number] {
+    const cls = classify(id, v);
+    if (cls === "good") return [72 + Math.floor(rnd() * 10), 15, 10];
+    if (cls === "ni") return [35, 40 + Math.floor(rnd() * 10), 22];
+    return [15, 25, 60];
+  }
+
+  const metrics: VitalMetric[] = [
+    {
+      id: "LCP",
+      title: "بزرگ‌ترین نمایش محتوا (LCP)",
+      value: lcpValue,
+      unit: "ms",
+      good: distribution("LCP", lcpValue)[0],
+      needsImprovement: distribution("LCP", lcpValue)[1],
+      poor: distribution("LCP", lcpValue)[2],
+      mobile: Math.round(lcpValue * 1.25),
+      desktop: Math.round(lcpValue * 0.7),
+      classification: classify("LCP", lcpValue),
+      description:
+        "زمان بارگذاری بزرگ‌ترین عنصر صفحه (مثل تصویر اصلی یا تیتر). کاربر نباید بیش از ۲.۵ ثانیه منتظر بماند.",
+    },
+    {
+      id: "INP",
+      title: "تعامل با صفحه (INP)",
+      value: inpValue,
+      unit: "ms",
+      good: distribution("INP", inpValue)[0],
+      needsImprovement: distribution("INP", inpValue)[1],
+      poor: distribution("INP", inpValue)[2],
+      mobile: Math.round(inpValue * 1.35),
+      desktop: Math.round(inpValue * 0.65),
+      classification: classify("INP", inpValue),
+      description:
+        "سرعت واکنش صفحه به کاربر؛ وقتی کلیک می‌کنید، چقدر طول می‌کشد تا صفحه جواب بدهد؟ حداکثر ۲۰۰ میلی‌ثانیه خوب است.",
+    },
+    {
+      id: "CLS",
+      title: "جابه‌جایی ناخواسته چیدمان (CLS)",
+      value: Math.round(clsValue * 1000) / 1000,
+      unit: "",
+      good: distribution("CLS", clsValue)[0],
+      needsImprovement: distribution("CLS", clsValue)[1],
+      poor: distribution("CLS", clsValue)[2],
+      mobile: Math.round(clsValue * 1250) / 1000,
+      desktop: Math.round(clsValue * 800) / 1000,
+      classification: classify("CLS", clsValue),
+      description:
+        "وقتی دکمه‌ای وسط خواندن جابه‌جا می‌شود و کلیک اشتباه می‌کنید، همین است! عدد کمتر از ۰٫۱ خوب است.",
+    },
+  ];
+
+  // روند ۱۲ ماهه (بهبود تدریجی)
+  const trend: { date: string; LCP: number; INP: number; CLS: number }[] = [];
+  for (let m = 12; m >= 0; m--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - m);
+    const progress = (12 - m) / 12;
+    trend.push({
+      date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-01`,
+      LCP: Math.round(lcpValue * (1.35 - progress * 0.35)),
+      INP: Math.round(inpValue * (1.4 - progress * 0.4)),
+      CLS: Math.round(clsValue * (1.5 - progress * 0.5) * 1000) / 1000,
+    });
+  }
+
+  return { metrics, trend, demo: true };
+}
+
+// ------------------------------------------------------------
+// ۳.۱۰ — حذف موقت URL (Removals)
+// ------------------------------------------------------------
+
+import type { RemovalItem } from "@/lib/types";
+
+// حافظه سرور برای درخواست‌های حذف در دمو
+const demoRemovalStore = new Map<string, RemovalItem[]>();
+
+/** لیست درخواست‌های حذف (قطعی + درخواست‌های کاربر در دمو) */
+export function mockRemovals(site: string): RemovalItem[] {
+  const base: RemovalItem[] = [
+    {
+      url: "/old-promotion-2023",
+      type: "REMOVE_SINGLE_URL",
+      status: "EXPIRED",
+      requestedAt: daysAgo(190),
+      expiresAt: daysAgo(90),
+    },
+    {
+      url: "/blog/draft-post",
+      type: "REMOVE_SINGLE_URL",
+      status: "PENDING",
+      requestedAt: daysAgo(3),
+      expiresAt: daysAgo(-87),
+    },
+    {
+      url: "/shop/out-of-stock/",
+      type: "REMOVE_PREFIX",
+      status: "PROCESSING",
+      requestedAt: daysAgo(1),
+      expiresAt: daysAgo(-89),
+    },
+    {
+      url: "/cache-sensitive-page",
+      type: "CLEAR_CACHE_90DAYS",
+      status: "PENDING",
+      requestedAt: daysAgo(5),
+      expiresAt: daysAgo(-85),
+    },
+  ];
+
+  const userAdded = demoRemovalStore.get(site) ?? [];
+  return [...userAdded, ...base];
+}
+
+/** ثبت درخواست حذف جدید در دمو */
+export function demoAddRemoval(site: string, url: string, type: RemovalItem["type"]): RemovalItem {
+  const store = demoRemovalStore.get(site) ?? [];
+  const item: RemovalItem = {
+    url,
+    type,
+    status: "PENDING",
+    requestedAt: daysAgo(0),
+    expiresAt: daysAgo(-90),
+  };
+  demoRemovalStore.set(site, [item, ...store]);
+  return item;
+}
+
+/** لغو درخواست حذف در دمو */
+export function demoCancelRemoval(site: string, url: string) {
+  const store = demoRemovalStore.get(site) ?? [];
+  const base = mockRemovals(site).filter((r) => store.some((s) => s.url === r.url));
+  demoRemovalStore.set(
+    site,
+    store.map((s) => (s.url === url ? { ...s, status: "CANCELED" as const } : s))
+  );
+  void base;
+}
