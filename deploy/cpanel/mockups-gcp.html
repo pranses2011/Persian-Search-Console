@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Google Cloud Console Mockups — Persian Search Console Guide</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto','Segoe UI',Arial,sans-serif}
+  body{background:#fff}
+  .screen{width:1200px;background:#fff;position:relative;margin:0 auto 8px;overflow:hidden}
+  .hidden{display:none}
+  .g-top{height:56px;background:#fff;border-bottom:1px solid #dadce0;display:flex;align-items:center;padding:0 20px;gap:14px}
+  .g-logo{display:flex;align-items:center;gap:10px}
+  .g-logo .mark{width:26px;height:26px}
+  .g-logo .t{font-size:20px;color:#5f6368}
+  .g-proj{display:flex;align-items:center;gap:8px;font-size:14px;color:#3c4043;background:#fff;border:1px solid #dadce0;border-radius:8px;padding:7px 14px}
+  .g-proj .dot{width:9px;height:9px;border-radius:50%;background:#a142f4}
+  .g-search{margin-left:auto;width:340px;height:40px;background:#f1f3f4;border-radius:8px;display:flex;align-items:center;padding:0 14px;color:#5f6368;font-size:13.5px;gap:10px}
+  .g-crumb{padding:18px 24px 4px;font-size:20px;color:#202124;font-weight:500}
+  .g-sub{padding:0 24px 14px;font-size:13.5px;color:#5f6368}
+  .g-body{padding:0 24px 30px}
+  .card{border:1px solid #dadce0;border-radius:10px;background:#fff;margin-bottom:18px}
+  .card .hd{padding:14px 20px;border-bottom:1px solid #e8eaed;font-size:14.5px;color:#202124;font-weight:600;display:flex;align-items:center;gap:10px}
+  .card .bd{padding:18px 20px}
+  .lbl{font-size:12.5px;color:#5f6368;font-weight:600;margin-bottom:6px;display:block}
+  .inp{width:100%;height:44px;border:1px solid #dadce0;border-radius:6px;padding:0 14px;font-size:14px;color:#202124;outline:none;background:#fff}
+  .inp:focus{border-color:#1a73e8}
+  .gbtn{background:#1a73e8;color:#fff;border:none;border-radius:6px;padding:10px 24px;font-size:14px;font-weight:600;cursor:default}
+  .gbtn.t{background:#fff;color:#1a73e8;border:1px solid #dadce0}
+  .row{display:flex;gap:16px;margin-bottom:16px}
+  .row>div{flex:1;position:relative}
+  .hint{font-size:11.5px;color:#80868b;margin-top:5px}
+  .radio{display:flex;align-items:center;gap:10px;font-size:14px;color:#202124;padding:10px 0}
+  .radio i{width:16px;height:16px;border-radius:50%;border:2px solid #5f6368;display:inline-block;position:relative}
+  .radio.sel i{border-color:#1a73e8}
+  .radio.sel i::after{content:'';position:absolute;inset:3px;background:#1a73e8;border-radius:50%}
+  .warn{background:#fef7e0;border:1px solid #fdd663;border-radius:8px;padding:12px 16px;font-size:12.5px;color:#994d00;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start}
+  .table{width:100%;border-collapse:collapse;font-size:13.5px}
+  .table th{text-align:left;padding:12px 16px;color:#5f6368;font-weight:600;border-bottom:1px solid #e8eaed;font-size:12.5px;background:#f8f9fa}
+  .table td{padding:12px 16px;border-bottom:1px solid #e8eaed;color:#202124}
+  .bkey{display:inline-flex;align-items:center;gap:8px;background:#f1f3f4;border-radius:6px;padding:5px 12px;font-family:Consolas,monospace;font-size:12.5px;color:#3c4043}
+  .dropdown{position:absolute;top:108px;right:70px;background:#fff;border:1px solid #dadce0;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,.2);width:300px;padding:8px 0;z-index:40}
+  .dropdown .it{display:flex;align-items:center;gap:12px;padding:11px 18px;font-size:14px;color:#202124;position:relative}
+  .dropdown .it svg{width:18px;height:18px;fill:#5f6368}
+  .dropdown .it.hl{background:#e8f0fe;color:#1967d2}
+  .dropdown .it.hl svg{fill:#1967d2}
+  .n{position:absolute;width:30px;height:30px;border-radius:50%;background:#dc2626;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4);color:#fff;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:50;font-family:Vazirmatn,Tahoma,sans-serif}
+  .n.gr{background:#0f9d58}
+  .mono{font-family:Consolas,monospace;font-size:13px;color:#0b57d0;background:#f1f8fe;padding:2px 6px;border-radius:4px;direction:ltr;display:inline-block}
+</style>
+</head>
+<body>
+
+<!-- ============ GCP 1: CREDENTIALS + CREATE ============ -->
+<div class="screen" id="gcp-credentials">
+  <div class="g-top">
+    <div class="g-logo">
+      <svg class="mark" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span class="t">Google Cloud</span>
+    </div>
+    <div class="g-proj"><i class="dot"></i> search-console-app <svg viewBox="0 0 24 24" style="width:16px;height:16px;fill:#5f6368"><path d="M7 10l5 5 5-5z"/></svg></div>
+    <div class="g-search">🔍  Search</div>
+  </div>
+  <div class="g-crumb">APIs &amp; Services &gt; <b>Credentials</b></div>
+  <div class="g-sub">Create an OAuth client ID to connect Google Search Console data</div>
+  <div class="g-body">
+    <div class="card" style="position:relative">
+      <div class="hd" style="justify-content:space-between">
+        <span>Credentials</span>
+        <span class="gbtn" style="position:relative;background:#fff;color:#1a73e8;border:1px solid #dadce0">+ CREATE CREDENTIALS
+          <span class="n" style="right:-14px;top:-8px">۱</span>
+        </span>
+      </div>
+      <table class="table">
+        <tr><th>Name</th><th>Type</th><th>Creation date</th><th>Status</th></tr>
+        <tr><td>Search Console Dashboard</td><td>OAuth 2.0 Client ID</td><td>Sep 9, 2026</td><td style="color:#188038">● Active</td></tr>
+      </table>
+      <div style="padding:16px 20px;font-size:13px;color:#5f6368">Google recommends OAuth 2.0 for browser-based applications.</div>
+      <div class="dropdown">
+        <div class="it"><svg viewBox="0 0 24 24"><path d="M12 2 3 7v10l9 5 9-5V7l-9-5z"/></svg> API key</div>
+        <div class="it hl"><svg viewBox="0 0 24 24"><path d="M15.5 1h-8A2.5 2.5 0 0 0 5 3.5v17A2.5 2.5 0 0 0 7.5 23h8a2.5 2.5 0 0 0 2.5-2.5v-17A2.5 2.5 0 0 0 15.5 1zm-4 20a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5zm4.5-4H7V4h9v13z"/></svg> OAuth client ID<span class="n" style="right:-12px;top:-8px">۲</span></div>
+        <div class="it"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg> Service account</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="bd" style="font-size:13.5px;color:#5f6368;line-height:1.8">
+        <b style="color:#202124">Important:</b> If the consent screen is not configured, click <b>OAuth consent screen</b> in the left menu first. (Step 2 of this guide)
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GCP 2: OAUTH CONSENT ============ -->
+<div class="screen" id="gcp-consent">
+  <div class="g-top">
+    <div class="g-logo">
+      <svg class="mark" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span class="t">Google Cloud</span>
+    </div>
+    <div class="g-proj"><i class="dot"></i> search-console-app</div>
+    <div class="g-search">🔍  Search</div>
+  </div>
+  <div class="g-crumb">APIs &amp; Services &gt; <b>OAuth consent screen</b></div>
+  <div class="g-sub">User type: Internal is not available for personal accounts — choose External</div>
+  <div class="g-body">
+    <div class="card">
+      <div class="bd">
+        <div class="row">
+          <div style="position:relative">
+            <span class="lbl">App name</span>
+            <input class="inp" value="Persian Search Console">
+            <span class="n" style="right:-14px;top:26px">۱</span>
+          </div>
+          <div>
+            <span class="lbl">User support email</span>
+            <select class="inp"><option>yourname@gmail.com</option></select>
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <span class="lbl">Application home page</span>
+            <input class="inp" value="https://search.example.com">
+          </div>
+          <div>
+            <span class="lbl">Application privacy policy</span>
+            <input class="inp" value="https://search.example.com/privacy" style="color:#80868b">
+          </div>
+        </div>
+        <div class="lbl" style="margin-bottom:4px">Audience — User type</div>
+        <div class="radio sel"><i></i> External <span class="hint" style="margin:0">— recommended for personal Gmail accounts</span></div>
+        <div class="radio"><i></i> Internal <span class="hint" style="margin:0">— only for Google Workspace organizations</span></div>
+        <div style="margin-top:20px;display:flex;gap:12px;align-items:center">
+          <span class="gbtn" style="position:relative;padding:10px 30px">SAVE AND CONTINUE
+            <span class="n" style="left:-16px;top:7px">۲</span>
+          </span>
+          <span class="hint">Scopes and test users steps: just click Save until the summary step</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GCP 3: OAUTH CLIENT FORM ============ -->
+<div class="screen" id="gcp-client-form">
+  <div class="g-top">
+    <div class="g-logo">
+      <svg class="mark" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span class="t">Google Cloud</span>
+    </div>
+    <div class="g-proj"><i class="dot"></i> search-console-app</div>
+    <div class="g-search">🔍  Search</div>
+  </div>
+  <div class="g-crumb">APIs &amp; Services &gt; Credentials &gt; <b>Create OAuth client ID</b></div>
+  <div class="g-sub">The app runs fully in your browser — only JavaScript origins are needed</div>
+  <div class="g-body">
+    <div class="card">
+      <div class="bd">
+        <div class="row" style="max-width:560px">
+          <div style="position:relative">
+            <span class="lbl">Application type</span>
+            <select class="inp"><option selected>Web application</option></select>
+            <span class="n" style="right:-14px;top:26px">۱</span>
+          </div>
+        </div>
+        <div class="row" style="max-width:560px">
+          <div>
+            <span class="lbl">Name</span>
+            <input class="inp" value="Persian Search Console (cPanel)">
+          </div>
+        </div>
+        <div style="border:1px solid #e8eaed;border-radius:8px;padding:16px;margin-bottom:16px;max-width:720px;position:relative">
+          <span class="lbl" style="margin-bottom:12px">Authorized JavaScript origins</span>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px">
+            <span style="width:16px;height:16px;border-radius:50%;background:#5f6368;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-family:Consolas">1</span>
+            <input class="inp" style="flex:1;position:relative" value="https://search.example.com">
+            <span class="n" style="right:8px;top:6px">۲</span>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <span style="width:16px;height:16px;border-radius:50%;background:#5f6368;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;font-family:Consolas">2</span>
+            <input class="inp" style="flex:1" value="https://example.com" style="color:#3c4043">
+          </div>
+          <div class="hint" style="margin-top:10px">Enter your dashboard's exact domain (with https). No redirect URI is required.</div>
+        </div>
+        <div class="warn">⚠ Your site must have HTTPS (SSL) active — Google only accepts https origins. In cPanel, enable free AutoSSL (guide step 8).</div>
+        <div style="margin-top:16px">
+          <span class="gbtn" style="position:relative;padding:10px 30px">CREATE
+            <span class="n" style="left:-16px;top:7px">۳</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ GCP 4: CLIENT ID CREATED ============ -->
+<div class="screen" id="gcp-client-id">
+  <div style="height:56px;background:#fff;border-bottom:1px solid #dadce0;display:flex;align-items:center;padding:0 20px">
+    <div class="g-logo">
+      <svg class="mark" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24s.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+      <span class="t">Google Cloud</span>
+    </div>
+  </div>
+  <div style="height:660px;background:#f8f9fa;display:flex;align-items:flex-start;justify-content:center;padding-top:60px;position:relative">
+    <div class="card" style="width:640px;box-shadow:0 8px 30px rgba(0,0,0,.12);position:relative">
+      <div class="bd" style="text-align:center">
+        <div style="width:60px;height:60px;border-radius:50%;background:#e6f4ea;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;fill:#34a853"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+        </div>
+        <div style="font-size:19px;color:#202124;font-weight:600;margin-bottom:6px">OAuth client created</div>
+        <div style="font-size:13px;color:#5f6368;margin-bottom:24px">Copy this Client ID into the dashboard login screen</div>
+        <div style="text-align:left;background:#fff;border:1px solid #dadce0;border-radius:8px;padding:16px;position:relative">
+          <div class="lbl">Your Client ID</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <code class="mono" style="font-size:13px;padding:8px 12px;flex:1">123456789012-abc123def456.apps.googleusercontent.com</code>
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#5f6368;cursor:pointer"><path d="M16 1H4a2 2 0 0 0-2 2v14h2V3h12V1zm3 4H8a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2zm0 16H8V7h11v14z"/></svg>
+            <span class="n" style="right:-13px;top:22px">۱</span>
+          </div>
+        </div>
+        <div style="margin-top:16px;text-align:left;font-size:12.5px;color:#5f6368">The Client Secret is not needed — this app works entirely in your browser.</div>
+        <div style="margin-top:22px"><span class="gbtn" style="padding:9px 36px">DONE</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const id = new URLSearchParams(location.search).get('screen');
+  if (id) document.querySelectorAll('.screen').forEach(s => { if (s.id !== id) s.classList.add('hidden'); });
+</script>
+</body>
+</html>

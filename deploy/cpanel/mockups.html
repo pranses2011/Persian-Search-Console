@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>cPanel UI Mockups — Persian Search Console Guide</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Roboto,Arial,sans-serif}
+  body{background:#fff;padding:0}
+  .screen{width:1200px;background:#fff;overflow:hidden;position:relative;box-shadow:0 0 0 1px #d8dde0;margin:0 auto 8px}
+  .hidden{display:none}
+  /* ---------- top header ---------- */
+  .cp-top{height:56px;background:#40464b;display:flex;align-items:center;padding:0 20px;gap:16px}
+  .cp-logo{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#ff9a4d,#ff6c2c);color:#fff;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center}
+  .cp-search{flex:1;max-width:640px;position:relative}
+  .cp-search input{width:100%;height:36px;border:none;border-radius:4px;padding:0 12px 0 38px;font-size:14px;color:#333;outline:none}
+  .cp-search svg{position:absolute;left:12px;top:10px;width:16px;height:16px;fill:#888}
+  .cp-user{margin-left:auto;display:flex;align-items:center;gap:10px;color:#dfe3e6;font-size:14px}
+  .cp-avatar{width:30px;height:30px;border-radius:50%;background:#7b858c;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px}
+  /* ---------- layout ---------- */
+  .cp-body{display:flex}
+  .cp-side{width:64px;background:#f0f2f3;border-right:1px solid #e2e6e8;display:flex;flex-direction:column;align-items:center;padding:12px 0;gap:14px}
+  .cp-side .ic{width:42px;height:42px;border-radius:6px;display:flex;align-items:center;justify-content:center}
+  .cp-side .ic svg{width:22px;height:22px;fill:#5f6b72}
+  .cp-side .ic.on{background:#e3eefc}
+  .cp-main{flex:1;padding:20px 24px;background:#fff;min-height:640px}
+  .crumb{font-size:20px;color:#2b3238;font-weight:600;margin-bottom:6px}
+  .crumb small{display:block;font-size:13px;color:#7b858c;font-weight:400;margin-top:4px}
+  /* ---------- category cards ---------- */
+  .cat{border:1px solid #e3e6e8;border-radius:6px;margin-bottom:20px}
+  .cat h3{font-size:12px;letter-spacing:1.5px;color:#5f6b72;background:#fafbfc;padding:10px 16px;border-bottom:1px solid #e3e6e8;font-weight:600}
+  .tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:14px 14px 18px}
+  .tile{display:flex;align-items:center;gap:12px;padding:12px 12px;border-radius:6px;position:relative}
+  .tile svg{width:30px;height:30px;flex:none}
+  .tile .t{font-size:14px;color:#2b3238;font-weight:600}
+  .tile .d{font-size:12px;color:#8a949a;margin-top:2px}
+  .tile.hl{background:#e8f2fe;outline:2px solid #3b82f6}
+  /* ---------- file manager ---------- */
+  .fm-top{height:48px;background:#fff;border-bottom:1px solid #e0e4e6;display:flex;align-items:center;padding:0 16px;gap:4px}
+  .fm-btn{display:flex;flex-direction:column;align-items:center;padding:6px 10px;border-radius:4px;position:relative;min-width:58px}
+  .fm-btn svg{width:20px;height:20px;fill:#54636c;margin-bottom:3px}
+  .fm-btn span{font-size:11px;color:#54636c}
+  .fm-btn:hover{background:#eef1f3}
+  .fm-btn.prime svg{fill:#2c7be5}.fm-btn.prime span{color:#2c7be5;font-weight:600}
+  .fm-path{height:44px;background:#f7f9fa;border-bottom:1px solid #e0e4e6;display:flex;align-items:center;gap:10px;padding:0 16px;font-size:13px;color:#444}
+  .fm-path .bc{display:flex;align-items:center;gap:6px}
+  .fm-path .bc b{color:#2c7be5;font-weight:600}
+  .fm-wrap{display:flex;height:600px}
+  .fm-tree{width:210px;border-right:1px solid #e0e4e6;padding:12px 8px;font-size:13px;color:#555}
+  .fm-tree .tr{padding:7px 10px;border-radius:4px;display:flex;align-items:center;gap:8px}
+  .fm-tree .tr svg{width:15px;height:15px;fill:#c9a227}
+  .fm-tree .tr.sel{background:#e8f2fe;color:#1d4ed8;font-weight:600}
+  .fm-tree .lv2{padding-left:28px}
+  .fm-table{flex:1;overflow:auto}
+  table.ft{width:100%;border-collapse:collapse;font-size:13px}
+  .ft th{position:sticky;top:0;background:#f7f9fa;text-align:left;font-size:11.5px;color:#66707a;font-weight:600;padding:9px 14px;border-bottom:1px solid #e0e4e6}
+  .ft td{padding:9px 14px;border-bottom:1px solid #eef1f3;color:#333}
+  .ft td.nm{display:flex;align-items:center;gap:9px;color:#2c7be5}
+  .ft td.nm.plain{color:#444}
+  .ft svg{width:17px;height:17px;flex:none}
+  .ziprow{background:#fff8e6}
+  /* ---------- modals ---------- */
+  .modal-mask{position:absolute;inset:0;background:rgba(40,46,50,.55);display:flex;align-items:center;justify-content:center}
+  .modal{width:560px;background:#fff;border-radius:8px;box-shadow:0 18px 60px rgba(0,0,0,.35);overflow:hidden}
+  .modal h4{font-size:15px;padding:14px 20px;border-bottom:1px solid #e6e9eb;color:#2b3238;display:flex;align-items:center;gap:10px}
+  .modal h4 svg{width:18px;height:18px;fill:#54636c}
+  .modal .bd{padding:20px}
+  .modal .ft-btns{padding:14px 20px;border-top:1px solid #e6e9eb;display:flex;justify-content:flex-end;gap:10px}
+  .btn{padding:8px 18px;border-radius:4px;font-size:13.5px;font-weight:600;cursor:default}
+  .btn.blue{background:#2c7be5;color:#fff}
+  .btn.ghost{background:#fff;border:1px solid #cdd4d8;color:#54636c}
+  .dropzone{border:2px dashed #b9c4cc;border-radius:8px;padding:38px 20px;text-align:center;color:#66707a;font-size:14px}
+  .dropzone svg{width:46px;height:46px;fill:#98a4ac;margin:0 auto 10px;display:block}
+  .prog{margin-top:18px}
+  .prog .row{margin-bottom:12px}
+  .prog .nm{font-size:12.5px;color:#444;margin-bottom:5px;display:flex;justify-content:space-between}
+  .bar{height:10px;background:#e6ebef;border-radius:5px;overflow:hidden}
+  .bar i{display:block;height:100%;background:linear-gradient(90deg,#42b154,#65c975);border-radius:5px}
+  .prog .ok{color:#2e9e44;font-size:12.5px;margin-top:8px;display:flex;align-items:center;gap:6px}
+  /* ---------- context menu ---------- */
+  .ctx{position:absolute;background:#fff;border:1px solid #d7dde1;border-radius:6px;box-shadow:0 10px 34px rgba(0,0,0,.22);width:210px;padding:6px;z-index:30}
+  .ctx .it{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:4px;font-size:13px;color:#3c474f;position:relative}
+  .ctx .it svg{width:15px;height:15px;fill:#75818a}
+  .ctx .it.hl{background:#e8f2fe;color:#1d4ed8;font-weight:700}
+  .ctx .it.hl svg{fill:#1d4ed8}
+  .ctx .sep{height:1px;background:#eef1f3;margin:5px 8px}
+  /* ---------- subdomain form ---------- */
+  .form{max-width:720px}
+  .form .fr{margin-bottom:18px}
+  .form label{display:block;font-size:13px;font-weight:600;color:#3c474f;margin-bottom:6px}
+  .form input,.form select{width:100%;height:40px;border:1px solid #cdd4d8;border-radius:4px;padding:0 12px;font-size:14px;color:#333;outline:none}
+  .form .hint{font-size:12px;color:#8a949a;margin-top:5px}
+  .form .inline{display:flex;gap:12px}
+  .form .inline>div{flex:1}
+  /* ---------- numbered badges ---------- */
+  .n{position:absolute;width:30px;height:30px;border-radius:50%;background:#dc2626;border:3px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,.4);color:#fff;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;z-index:50;font-family:Vazirmatn,Tahoma,sans-serif}
+  .n.gr{background:#0f9d58}
+</style>
+</head>
+<body>
+
+<!-- ============ SCREEN 1: cPanel LOGIN ============ -->
+<div class="screen" id="cpanel-login">
+  <div style="height:520px;background:linear-gradient(180deg,#2f3840,#1f262c);display:flex;align-items:center;justify-content:center;position:relative">
+    <div style="width:400px;background:#fff;border-radius:10px;padding:34px 34px 28px;box-shadow:0 24px 80px rgba(0,0,0,.5);position:relative">
+      <div style="display:flex;justify-content:center;margin-bottom:20px">
+        <div class="cp-logo" style="width:56px;height:56px;font-size:26px">cP</div>
+      </div>
+      <div style="text-align:center;font-size:17px;color:#2b3238;font-weight:600;margin-bottom:22px">Login to your cPanel account</div>
+      <div style="position:relative;margin-bottom:16px">
+        <label style="font-size:12px;color:#66707a;font-weight:600;display:block;margin-bottom:5px">Username</label>
+        <input style="width:100%;height:42px;border:1px solid #cdd4d8;border-radius:5px;padding:0 14px;font-size:14px" value="hosting_user">
+        <span class="n" style="right:-15px;top:24px">۱</span>
+      </div>
+      <div style="position:relative;margin-bottom:22px">
+        <label style="font-size:12px;color:#66707a;font-weight:600;display:block;margin-bottom:5px">Password</label>
+        <input style="width:100%;height:42px;border:1px solid #cdd4d8;border-radius:5px;padding:0 14px;font-size:14px" type="password" value="••••••••••••">
+        <span class="n" style="right:-15px;top:24px">۲</span>
+      </div>
+      <button class="btn blue" style="width:100%;height:44px;font-size:15px;position:relative">Log in
+        <span class="n" style="left:-16px;top:6px">۳</span>
+      </button>
+      <div style="margin-top:16px;font-size:12px;color:#8a949a;text-align:center">login.examplehost.com:2083</div>
+    </div>
+    <div style="position:absolute;top:24px;left:0;right:0;text-align:center;color:#8fa0ad;font-size:13px">examplehost.com — Web Host Manager</div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 2: cPanel HOME → File Manager ============ -->
+<div class="screen" id="cpanel-home">
+  <div class="cp-top">
+    <div class="cp-logo">cP</div>
+    <div class="cp-search"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg><input value="file manager" style="position:relative"></div>
+    <div class="cp-user"><span class="cp-avatar">H</span> hosting_user</div>
+  </div>
+  <div class="cp-body">
+    <div class="cp-side">
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5zm7.43-2.53.9-.74c.06-.5.1-1 .1-1.53s-.04-1.03-.1-1.53l-.9-.74c-.07-.6-.28-1.16-.6-1.64l.24-1.13c-.36-.44-.78-.84-1.24-1.18l-1.13.24c-.5-.3-1.05-.5-1.63-.58l-.74-.9c-.5-.06-1-.1-1.53-.1s-1.03.04-1.53.1l-.74.9c-.58.08-1.13.28-1.63.58l-1.13-.24c-.46.34-.88.74-1.24 1.18l.24 1.13c-.32.48-.53 1.04-.6 1.64l-.9.74c-.06.5-.1 1-.1 1.53s.04 1.03.1 1.53l.9.74c.07.6.28 1.16.6 1.64l-.24 1.13c.36.44.78.84 1.24 1.18l1.13-.24c.5.3 1.05.5 1.63.58l.74.9c.5.06 1 .1 1.53.1s1.03-.04 1.53-.1l.74-.9c.58-.08 1.13-.28 1.63-.58l1.13.24c.46-.34.88-.74 1.24-1.18l-.24-1.13c.32-.48.53-1.04.6-1.64z"/></svg></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 14H4V8h16v10zm-2-7a2 2 0 1 1-2-2 2 2 0 0 1 2 2z"/></svg></div>
+      <div class="ic on"><svg viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 3C7.58 3 4 4.79 4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7c0-2.21-3.58-4-8-4zm0 2c3.87 0 6 1.5 6 2s-2.13 2-6 2-6-1.5-6-2 2.13-2 6-2z"/></svg></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm-1 17.93A8 8 0 0 1 4.07 12H7v2a1 1 0 0 0 1 1h3v4.93zm7.93-7.93H16v-2a1 1 0 0 0-1-1h-3V4.07A8 8 0 0 1 19.93 12z"/></svg></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg></div>
+      <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg></div>
+    </div>
+    <div class="cp-main">
+      <div class="crumb">Home <small>Search results for "file manager"</small></div>
+      <div class="cat">
+        <h3>FILES</h3>
+        <div class="tiles">
+          <div class="tile hl" style="position:relative">
+            <svg viewBox="0 0 24 24" fill="#4a90d9"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg>
+            <div><div class="t">File Manager</div><div class="d">Upload and manage files</div></div>
+            <span class="n" style="right:-10px;top:-10px">۲</span>
+          </div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="#9ab2bf"><path d="M21 19V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2zM8.5 13.5l2.5 3 3.5-4.5 4.5 6H5l3.5-4.5z"/></svg><div><div class="t">Images</div></div></div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="#9ab2bf"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg><div><div class="t">Disk Usage</div></div></div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="#9ab2bf"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><div><div class="t">Backups</div></div></div>
+        </div>
+      </div>
+      <div class="cat">
+        <h3>DOMAINS</h3>
+        <div class="tiles">
+          <div class="tile"><svg viewBox="0 0 24 24" fill="#9ab2bf"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-10zm-1 17.93A8 8 0 0 1 4.07 12H7v2a1 1 0 0 0 1 1h3v4.93z"/></svg><div><div class="t">Domains</div></div></div>
+          <div class="tile"><svg viewBox="0 0 24 24" fill="#9ab2bf"><path d="M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/></svg><div><div class="t">Subdomains</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="n" style="left:430px;top:12px">۱</span>
+</div>
+
+<!-- ============ SCREEN 3: FILE MANAGER (empty public_html) ============ -->
+<div class="screen" id="cpanel-filemanager">
+  <div class="cp-top" style="height:48px">
+    <div class="cp-logo" style="width:30px;height:30px;font-size:14px">cP</div>
+    <div style="color:#dfe3e6;font-size:14px;font-weight:600;margin-left:8px">File Manager</div>
+    <div class="cp-user"><span class="cp-avatar" style="width:26px;height:26px;font-size:11px">H</span> hosting_user</div>
+  </div>
+  <div class="fm-top">
+    <div class="fm-btn"><svg viewBox="0 0 24 24"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm8 7V3.5L18.5 9H14z"/></svg><span>+ File</span></div>
+    <div class="fm-btn"><svg viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg><span>+ Folder</span></div>
+    <div class="fm-btn prime" style="position:relative"><svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg><span>Upload</span><span class="n" style="right:-10px;top:-10px">۱</span></div>
+    <div class="fm-btn"><svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-5-5 1.41-1.41L10 14.17l7.59-7.58L19 8l-9 9z"/></svg><span>Extract</span></div>
+    <div class="fm-btn"><svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg><span>Delete</span></div>
+    <div class="fm-btn"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg><span>Rename</span></div>
+    <div style="margin-left:auto;font-size:12px;color:#8a949a">public_html — Domain's root directory</div>
+  </div>
+  <div class="fm-path">
+    <svg viewBox="0 0 24 24" style="width:15px;height:15px;fill:#54636c"><path d="M11 18h2v-2h-2v2zm1-16a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-14a4 4 0 0 0-4 4h2a2 2 0 1 1 4 0c0 2-3 1.75-3 5h2c0-2.25 3-2.5 3-5a4 4 0 0 0-4-4z"/></svg>
+    <div class="bc"><b>home</b> / <b style="position:relative">public_html<span class="n" style="right:-38px;top:-8px">۲</span></b></div>
+  </div>
+  <div class="fm-wrap">
+    <div class="fm-tree">
+      <div class="tr"><svg viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> .cpanel</div>
+      <div class="tr"><svg viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> mail</div>
+      <div class="tr sel"><svg viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> public_html</div>
+      <div class="tr lv2"><svg viewBox="0 0 24 24"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> cgi-bin</div>
+    </div>
+    <div class="fm-table">
+      <table class="ft">
+        <tr><th>Name</th><th>Size</th><th>Perms</th><th>Type</th></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#c9a227"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> cgi-bin</td><td>4 KB</td><td>0755</td><td>Directory</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#54636c"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm8 7V3.5L18.5 9H14z"/></svg> default.html</td><td>2 KB</td><td>0644</td><td>HTML document</td></tr>
+      </table>
+      <div style="padding:16px 14px;font-size:12.5px;color:#8a949a">2 items — public_html is currently empty (except default page)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 4: UPLOAD MODAL ============ -->
+<div class="screen" id="cpanel-upload">
+  <div style="height:48px;background:#40464b;display:flex;align-items:center;padding:0 20px">
+    <div class="cp-logo" style="width:30px;height:30px;font-size:14px">cP</div>
+    <div style="color:#dfe3e6;font-size:14px;font-weight:600;margin-left:8px">File Manager — Upload</div>
+  </div>
+  <div style="height:660px;background:#fff;padding:30px;position:relative">
+    <div class="modal-mask" style="position:absolute;inset:0;background:rgba(255,255,255,0)">
+      <div class="modal" style="box-shadow:none;border:1px solid #e3e6e8">
+        <h4><svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg> Upload Files</h4>
+        <div class="bd">
+          <div class="dropzone" style="position:relative">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            Drag files here to upload or
+            <span class="n" style="left:-14px;top:-14px">۱</span>
+          </div>
+          <div style="text-align:center;margin-top:14px;position:relative;display:inline-block;transform:translateX(-50%);left:50%">
+            <button class="btn blue" style="padding:9px 26px">Select Files</button>
+            <span class="n" style="right:-42px;top:2px">۲</span>
+          </div>
+          <div class="prog">
+            <div class="row">
+              <div class="nm"><span>Persian-Search-Console-cPanel-v1.1.0.zip</span><span>708 KB / 708 KB</span></div>
+              <div class="bar"><i style="width:62%"></i></div>
+            </div>
+          </div>
+          <div style="margin-top:18px;font-size:12.5px;color:#66707a;display:flex;align-items:center;gap:8px">
+            <input type="checkbox" checked style="width:15px;height:15px"> Overwrite existing files
+          </div>
+        </div>
+        <div class="ft-btns"><button class="btn ghost">Cancel</button><button class="btn blue">Upload</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 5: UPLOAD COMPLETE ============ -->
+<div class="screen" id="cpanel-upload-done">
+  <div style="height:48px;background:#40464b;display:flex;align-items:center;padding:0 20px">
+    <div class="cp-logo" style="width:30px;height:30px;font-size:14px">cP</div>
+    <div style="color:#dfe3e6;font-size:14px;font-weight:600;margin-left:8px">File Manager — Upload</div>
+  </div>
+  <div style="height:520px;background:#fff;padding:30px;display:flex;align-items:center;justify-content:center">
+    <div class="modal" style="box-shadow:none;border:1px solid #e3e6e8;position:relative">
+      <h4><svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg> Upload Files</h4>
+      <div class="bd">
+        <div class="dropzone" style="border-color:#b6dfc1;background:#f2fbf4">
+          <svg viewBox="0 0 24 24" style="fill:#0f9d58"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+          <div style="color:#2e9e44;font-weight:700">Upload complete. Click "Go Back to File Manager" to extract the ZIP.</div>
+        </div>
+        <div class="prog">
+          <div class="row">
+            <div class="nm"><span>Persian-Search-Console-cPanel-v1.1.0.zip</span><span>100%</span></div>
+            <div class="bar"><i style="width:100%"></i></div>
+            <div class="ok"><svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#2e9e44"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg> Uploaded successfully (708 KB)</div>
+          </div>
+        </div>
+      </div>
+      <div class="ft-btns"><button class="btn ghost">Go Back to File Manager</button></div>
+      <span class="n gr" style="left:-15px;top:-12px">✔</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 6: RIGHT-CLICK → EXTRACT ============ -->
+<div class="screen" id="cpanel-extract-menu">
+  <div class="cp-top" style="height:48px">
+    <div class="cp-logo" style="width:30px;height:30px;font-size:14px">cP</div>
+    <div style="color:#dfe3e6;font-size:14px;font-weight:600;margin-left:8px">File Manager</div>
+    <div class="cp-user"><span class="cp-avatar" style="width:26px;height:26px;font-size:11px">H</span> hosting_user</div>
+  </div>
+  <div class="fm-path" style="margin-top:0">
+    <div class="bc"><b>home</b> / <b>public_html</b></div>
+  </div>
+  <div class="fm-wrap" style="height:540px">
+    <div class="fm-table">
+      <table class="ft">
+        <tr><th>Name</th><th>Size</th><th>Perms</th><th>Type</th></tr>
+        <tr class="ziprow"><td class="nm"><svg viewBox="0 0 24 24" fill="#c9a227"><path d="M20 6h-8l-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2z"/></svg> <b>Persian-Search-Console-cPanel-v1.1.0.zip</b></td><td>708 KB</td><td>0644</td><td>ZIP archive</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#c9a227"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> cgi-bin</td><td>4 KB</td><td>0755</td><td>Directory</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="ctx" style="left:560px;top:180px">
+    <div class="it"><svg viewBox="0 0 24 24"><path d="M19.35 10.04A7.49 7.49 0 0 0 12 4C9.11 4 6.6 5.64 5.35 8.04A5.994 5.994 0 0 0 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg> Download</div>
+    <div class="it"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg> Rename</div>
+    <div class="it"><svg viewBox="0 0 24 24"><path d="M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg> Delete</div>
+    <div class="sep"></div>
+    <div class="it hl" style="position:relative"><svg viewBox="0 0 24 24"><path d="M12 16l-6-6 1.41-1.41L12 13.17l4.59-4.58L18 10l-6 6z"/></svg> Extract<span class="n" style="right:-12px;top:-8px">۱</span></div>
+    <div class="it"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg> Compress</div>
+  </div>
+  <div style="position:absolute;left:460px;top:140px;font-size:12.5px;color:#dc2626;background:#fff;border:1px dashed #dc2626;border-radius:6px;padding:6px 12px;font-family:Vazirmatn,Tahoma">روی فایل زیپ راست‌کلیک کنید</div>
+</div>
+
+<!-- ============ SCREEN 7: EXTRACTION RESULTS ============ -->
+<div class="screen" id="cpanel-extract-done">
+  <div style="height:48px;background:#40464b;display:flex;align-items:center;padding:0 20px">
+    <div class="cp-logo" style="width:30px;height:30px;font-size:14px">cP</div>
+    <div style="color:#dfe3e6;font-size:14px;font-weight:600;margin-left:8px">File Manager</div>
+  </div>
+  <div style="height:560px;background:#f4f6f7;position:relative">
+    <div class="modal-mask">
+      <div class="modal" style="width:640px">
+        <h4><svg viewBox="0 0 24 24"><path d="M12 16l-6-6 1.41-1.41L12 13.17l4.59-4.58L18 10l-6 6z"/></svg> Extraction Results</h4>
+        <div class="bd" style="font-size:13.5px;color:#444">
+          <div style="margin-bottom:14px;color:#2e9e44;font-weight:700;font-size:14.5px;display:flex;align-items:center;gap:8px">
+            <svg viewBox="0 0 24 24" style="width:18px;height:18px;fill:#2e9e44"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+            The archive has been successfully extracted.
+          </div>
+          <div style="background:#f7f9fa;border:1px solid #e3e6e8;border-radius:6px;padding:12px;font-family:Consolas,monospace;font-size:12.5px;line-height:1.9;color:#3c474f;direction:ltr">
+            index.html<br>
+            .htaccess<br>
+            favicon.svg<br>
+            README-INSTALL.txt<br>
+            _next/<br>
+            &nbsp;&nbsp;├─ static/<br>
+            &nbsp;&nbsp;└─ (build files)
+          </div>
+          <div style="margin-top:14px;font-size:12.5px;color:#8a949a">47 files extracted — destination: public_html/</div>
+        </div>
+        <div class="ft-btns"><button class="btn blue" style="position:relative">Close<span class="n" style="left:-16px;top:5px">۱</span></button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 8: FILES EXTRACTED ============ -->
+<div class="screen" id="cpanel-files-extracted">
+  <div class="cp-top" style="height:48px">
+    <div class="cp-logo" style="width:30px;height:30px;font-size:14px">cP</div>
+    <div style="color:#dfe3e6;font-size:14px;font-weight:600;margin-left:8px">File Manager</div>
+    <div class="cp-user"><span class="cp-avatar" style="width:26px;height:26px;font-size:11px">H</span> hosting_user</div>
+  </div>
+  <div class="fm-path">
+    <div class="bc"><b>home</b> / <b>public_html</b></div>
+    <div style="margin-left:auto;font-size:12px;color:#2e9e44;font-weight:700;display:flex;align-items:center;gap:5px">
+      <svg viewBox="0 0 24 24" style="width:13px;height:13px;fill:#2e9e44"><path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      All files ready
+    </div>
+  </div>
+  <div class="fm-wrap" style="height:540px">
+    <div class="fm-table">
+      <table class="ft">
+        <tr><th>Name</th><th>Size</th><th>Perms</th><th>Type</th></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#4a90d9"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm8 7V3.5L18.5 9H14z"/></svg> <b>index.html</b></td><td>7 KB</td><td>0644</td><td>HTML document</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#8a949a"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm8 7V3.5L18.5 9H14z"/></svg> .htaccess</td><td>2 KB</td><td>0644</td><td>Configuration file</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#c9a227"><path d="M10 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-8l-2-2z"/></svg> <b>_next</b></td><td>2.2 MB</td><td>0755</td><td>Directory</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#54636c"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm8 7V3.5L18.5 9H14z"/></svg> favicon.svg</td><td>3 KB</td><td>0644</td><td>SVG image</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#54636c"><path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6H6zm8 7V3.5L18.5 9H14z"/></svg> README-INSTALL.txt</td><td>1 KB</td><td>0644</td><td>Plain text</td></tr>
+        <tr><td class="nm"><svg viewBox="0 0 24 24" fill="#c9a227"><path d="M20 6h-8l-2-2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2z"/></svg> Persian-Search-Console-cPanel-v1.1.0.zip</td><td>708 KB</td><td>0644</td><td>ZIP archive</td></tr>
+      </table>
+    </div>
+  </div>
+  <span class="n" style="left:210px;top:130px">۱</span>
+  <span class="n" style="left:210px;top:172px">۲</span>
+  <span class="n" style="left:210px;top:214px">۳</span>
+</div>
+
+<!-- ============ SCREEN 9: SUBDOMAINS (optional) ============ -->
+<div class="screen" id="cpanel-subdomain">
+  <div class="cp-top">
+    <div class="cp-logo">cP</div>
+    <div class="cp-search"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg><input placeholder="Search"></div>
+    <div class="cp-user"><span class="cp-avatar">H</span> hosting_user</div>
+  </div>
+  <div class="cp-body">
+    <div class="cp-main">
+      <div class="crumb">Subdomains <small>Create search.example.com for the dashboard</small></div>
+      <div class="cat">
+        <h3>CREATE A SUBDOMAIN</h3>
+        <div class="form" style="padding:20px 16px">
+          <div class="inline">
+            <div style="position:relative">
+              <label>Subdomain</label>
+              <input value="search">
+              <span class="n" style="right:-14px;top:26px">۱</span>
+            </div>
+            <div>
+              <label>Domain</label>
+              <select><option>example.com</option></select>
+            </div>
+          </div>
+          <div class="fr" style="position:relative">
+            <label>Document Root <span style="color:#8a949a;font-weight:400">(auto-filled — no change needed)</span></label>
+            <input value="/home/hosting_user/public_html/search" style="background:#f7f9fa;color:#66707a">
+            <span class="n" style="right:-14px;top:30px">۲</span>
+            <div class="hint">The subdomain's files will live in this folder. Upload the ZIP here later.</div>
+          </div>
+          <button class="btn blue" style="position:relative;padding:10px 34px">Submit
+            <span class="n" style="left:-16px;top:7px">۳</span>
+          </button>
+          <div style="margin-top:22px;border-top:1px solid #eef1f3;padding-top:16px;font-size:12.5px;color:#66707a">
+            <b>Existing subdomains:</b><br>
+            search.example.com → /public_html/search &nbsp;·&nbsp; blog.example.com → /public_html/blog
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SCREEN 10: SSL / AutoSSL ============ -->
+<div class="screen" id="cpanel-ssl">
+  <div class="cp-top">
+    <div class="cp-logo">cP</div>
+    <div class="cp-search"><svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14z"/></svg><input placeholder="Search"></div>
+    <div class="cp-user"><span class="cp-avatar">H</span> hosting_user</div>
+  </div>
+  <div class="cp-body">
+    <div class="cp-main">
+      <div class="crumb">SSL/TLS Status <small>Free AutoSSL certificate for your dashboard domain</small></div>
+      <div class="cat">
+        <h3>SSL/TLS STATUS — DOMAINS</h3>
+        <div class="bd" style="padding:16px">
+          <table class="ft" style="font-size:13.5px">
+            <tr style="border-bottom:1px solid #e0e4e6">
+              <td style="padding:12px 8px;display:flex;align-items:center;gap:10px;font-weight:700;color:#2b3238">
+                <svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:#2e9e44"><path d="M12 1 3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16-4-4 1.41-1.41L10 14.17l6.59-6.58L18 9l-8 8z"/></svg>
+                search.example.com
+              </td>
+              <td style="color:#2e9e44;font-weight:700;padding:12px 8px">Certificate Active (AutoSSL)</td>
+              <td style="color:#66707a;padding:12px 8px">Expires: Dec 2026</td>
+              <td style="padding:12px 8px"><span class="btn ghost" style="font-size:12px">View Certificate</span></td>
+            </tr>
+            <tr>
+              <td style="padding:12px 8px;display:flex;align-items:center;gap:10px;font-weight:700;color:#2b3238">
+                <svg viewBox="0 0 24 24" style="width:17px;height:17px;fill:#d9a100"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg>
+                example.com
+              </td>
+              <td style="color:#d9a100;font-weight:700;padding:12px 8px">Certificate Expired</td>
+              <td style="color:#66707a;padding:12px 8px">—</td>
+              <td style="padding:12px 8px"><span class="btn ghost" style="font-size:12px">View Certificate</span></td>
+            </tr>
+          </table>
+          <div style="margin-top:20px;display:flex;align-items:center;gap:14px;position:relative;display:inline-flex">
+            <span class="btn blue" style="padding:10px 22px;background:#2c7be5;color:#fff">Run AutoSSL</span>
+            <span class="n" style="right:-16px;top:4px">۱</span>
+            <span style="font-size:12.5px;color:#66707a">Issues a free Let's Encrypt / Sectigo certificate for all domains — up to 15 minutes</span>
+          </div>
+          <div style="margin-top:16px;background:#f2f7ff;border:1px solid #c9d9f5;border-radius:6px;padding:12px 16px;font-size:12.5px;color:#33517e">
+            <b>Why this matters:</b> Google Identity Services only accepts https:// origins. Your dashboard domain needs a valid SSL certificate before connecting real Google data.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // نمایش فقط صفحه درخواستی: ?screen=<id>
+  const id = new URLSearchParams(location.search).get('screen');
+  if (id) document.querySelectorAll('.screen').forEach(s => { if (s.id !== id) s.classList.add('hidden'); });
+</script>
+</body>
+</html>
