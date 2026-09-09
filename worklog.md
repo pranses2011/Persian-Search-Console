@@ -19,3 +19,22 @@ Work Log:
 
 Stage Summary:
 - زیرساخت RTL فارسی آماده است؛ آماده پیاده‌سازی بخش ۱ (احراز هویت OAuth)
+
+---
+Task ID: 1
+Agent: main
+Task: بخش ۱ — احراز هویت Google OAuth 2.0
+
+Work Log:
+- lib/auth.ts: نشست کوکی httpOnly + createSession/getSession/clearSession
+- lib/google.ts: ساخت URL رضایت گوگل با scopeهای webmasters، تبادل کد↔توکن، تازه‌سازی خودکار، پروفایل
+- مسیرهای API: /api/auth/google (redirect)، callback (تبادل+ذخیره توکن)، demo (ورود نمایشی)، logout (پاک‌کردن توکن‌ها)، me
+- store/app-store.ts: Zustand با وضعیت کاربر/سایت/بخش/بازه زمانی/فیلترها
+- login-view.tsx: صفحه ورود با دکمه گوگل (آیکون رسمی) + دکمه دمو + مدیریت خطاها
+- user-menu.tsx: نمایش نام/ایمیل/آواتار + بج «حالت نمایشی» + خروج
+- page.tsx: SPA با Suspense و اسکلتون لودینگ؛ app-shell.tsx: هدر + پاورقی چسبان
+- lib/gsc.ts: کلاینت کامل Search Console API (sites، searchAnalytics، sitemaps، urlInspection) با refresh خودکار توکن
+- تست curl: ورود دمو، me، sites و logout همگی موفق
+
+Stage Summary:
+- بخش ۱ کامل و تست‌شده؛ آماده بخش ۲ (UI کامل لیست سایت‌ها + موتور داده نمایشی)
