@@ -32,6 +32,20 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# فایل نمونه تنظیمات بخشی از پروژه است و باید منتشر شود
+!.env.example
+
+# فایل‌های محیط اجرا (جزو پروژه نیستند)
+/.zscripts/
+/db/
+/download/
+/examples/
+/mini-services/
+/tests/
+/upload/
+/worklog.md
+/Caddyfile
+dev.pid
 
 # vercel
 .vercel
