@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { getSession } from "@/lib/auth";
-import { getValidAccessToken, listSites, cleanSiteUrl } from "@/lib/gsc";
+import { getValidAccessToken, listSites } from "@/lib/gsc";
 import type { GscSite } from "@/lib/types";
 
 // GET /api/sites — لیست سایت‌های ثبت‌شده کاربر در سرچ کنسول
@@ -33,6 +33,20 @@ export async function GET() {
         {
           siteUrl: "https://devnotes.io/",
           displayName: "https://devnotes.io",
+          type: "URL_PREFIX",
+          verified: true,
+          permissionLevel: "siteOwner",
+        },
+        {
+          siteUrl: "sc-domain:tourism-hub.ir",
+          displayName: "tourism-hub.ir",
+          type: "DOMAIN",
+          verified: true,
+          permissionLevel: "siteOwner",
+        },
+        {
+          siteUrl: "https://test.newsite.ir/",
+          displayName: "https://test.newsite.ir",
           type: "URL_PREFIX",
           verified: false,
           permissionLevel: "siteUnverifiedUser",

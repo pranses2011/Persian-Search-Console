@@ -87,7 +87,14 @@ export const useAppStore = create<AppState>((set) => ({
     set((s) => ({
       user,
       googleConfigured: googleConfigured ?? s.googleConfigured,
-      view: user ? (s.view === "loading" ? "properties" : s.view) : "login",
+      // با ورود کاربر به لیست سایت‌ها می‌رویم؛ با خروج به صفحه ورود
+      view: user
+        ? s.view === "dashboard" && s.selectedSite
+          ? "dashboard"
+          : "properties"
+        : "login",
+      // در خروج، سایت انتخابی هم پاک شود
+      selectedSite: user ? s.selectedSite : null,
     })),
   setView: (view) => set({ view }),
 

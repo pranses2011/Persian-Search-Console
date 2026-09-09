@@ -53,9 +53,6 @@ function AppInner() {
     };
   }, [setUser, googleConfigured, setUser]);
 
-  // نیاز به Suspense برای useSearchParams
-  void searchParams;
-
   switch (view) {
     case "loading":
       return <LoadingView />;
