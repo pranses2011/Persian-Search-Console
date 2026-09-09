@@ -128,7 +128,7 @@ export function DashboardView() {
       <div className="flex-1 min-w-0 space-y-5">
         {/* نوار موبایل: همبرگر + عنوان بخش */}
         <div className="lg:hidden flex items-center gap-2 no-print">
-          <Sheet open={menuOpen} onOpenChange={setMenuOpen} dir="rtl">
+          <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="outline" size="icon" className="w-9 h-9 shrink-0" aria-label="باز کردن منو">
                 <Menu className="w-4.5 h-4.5" />

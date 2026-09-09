@@ -61,7 +61,7 @@ export function NotificationsBell() {
   if (!site) return null;
 
   return (
-    <Popover open={open} onOpenChange={handleOpenChange} dir="rtl">
+    <Popover open={open} onOpenChange={handleOpenChange}>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"

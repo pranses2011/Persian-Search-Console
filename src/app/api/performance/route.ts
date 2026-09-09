@@ -94,15 +94,10 @@ export async function GET(req: NextRequest) {
         ? [{ groupType: "and", filters: gscFilters }]
         : undefined;
 
-      // سری روزانه
-      const rawDaily = await searchAnalyticsDaily(accessToken, site, start, end, filterGroups);
-      const daily: DailyRow[] = rawDaily.map((r) => ({
-        date: r.key,
-        clicks: r.clicks,
-        impressions: r.impressions,
-        ctr: r.ctr,
-        position: r.position,
-      }));
+      // سری روزانه (searchAnalyticsDaily خروجی DailyRow دارد)
+      const daily: DailyRow[] = await searchAnalyticsDaily(
+        accessToken, site, start, end, filterGroups
+      );
 
       // جدول بعد انتخابی
       const rawRows = await searchAnalytics(accessToken, site, {

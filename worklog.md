@@ -187,3 +187,24 @@ Work Log:
 
 Stage Summary:
 - مستندات کامل؛ آماده تست نهایی
+
+---
+Task ID: 11
+Agent: main
+Task: تست نهایی جامع + رفع خطاهای TypeScript + کامیت پایانی
+
+Work Log:
+- LICENSE (MIT) اضافه شد
+- رفع تمام خطاهای tsc در کد پروژه:
+  - performance/route.ts: نگاشت اضافی DailyRow حذف شد
+  - summary/route.ts: تایپ SmartNotification[] برای آرایه نوتیفیکیشن‌ها
+  - mock-engine.ts: non-null assertion برای فیلترها
+  - mock-sections.ts: severity به as const
+  - حذف dir prop از کامپوننت‌های Radix (تایپ‌ها نمی‌پذیرند؛ dir سند RTL کافی است)
+- تست E2E کامل: پاک‌سازی نشست → ورود دمو → لیست سایت‌ها → داشبورد →
+  بازدید همه ۱۰ بخش → بازگشت به نمای کلی — همه موفق
+- کنسول مرورگر پس از پاک‌سازی: صفر خطا
+- اسکرین‌شات‌های نهایی در screenshots/
+
+Stage Summary:
+- پروژه کامل: ۸/۸ بخش، ۱۲ کامیت، تمام تست‌های E2E سبز

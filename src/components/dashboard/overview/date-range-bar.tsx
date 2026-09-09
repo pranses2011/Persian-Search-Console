@@ -66,7 +66,7 @@ export function DateRangeBar() {
             </TabsTrigger>
           ))}
           {/* بازه سفارشی */}
-          <Popover open={customOpen} onOpenChange={setCustomOpen} dir="rtl">
+          <Popover open={customOpen} onOpenChange={setCustomOpen}>
             <PopoverTrigger asChild>
               <TabsTrigger value="custom" className="text-xs px-3 h-7 gap-1.5">
                 <CalendarRange className="w-3.5 h-3.5" />

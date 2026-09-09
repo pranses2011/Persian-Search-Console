@@ -24,7 +24,7 @@ export function HelpTip({ title, children, example, side = "bottom" }: HelpTipPr
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Popover open={open} onOpenChange={setOpen} dir="rtl">
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger
         onClick={(e) => e.stopPropagation()}
         aria-label={`راهنما: ${title}`}
@@ -33,7 +33,7 @@ export function HelpTip({ title, children, example, side = "bottom" }: HelpTipPr
       >
         <HelpCircle className="w-3.5 h-3.5" />
       </PopoverTrigger>
-      <PopoverContent side={side} align="start" className="w-80 p-4" dir="rtl">
+      <PopoverContent side={side} align="start" className="w-80 p-4">
         <div className="space-y-2.5">
           <p className="font-bold text-sm flex items-center gap-1.5">
             <HelpCircle className="w-4 h-4 text-primary" />

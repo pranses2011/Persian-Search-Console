@@ -4,7 +4,7 @@ import { withCache } from "@/lib/cache";
 import { mockSummary } from "@/lib/mock-sections";
 import { getValidAccessToken, searchAnalyticsDaily, sumTotals } from "@/lib/gsc";
 import { previousRange } from "@/lib/mock-engine";
-import type { SummaryResponse } from "@/lib/types";
+import type { SummaryResponse, SmartNotification } from "@/lib/types";
 
 // GET /api/summary?site=&start=&end= — خلاصه وضعیت کلی + نوتیفیکیشن هوشمند (بخش ۶)
 export async function GET(req: NextRequest) {
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
       : undefined;
 
     // نوتیفیکیشن‌های هوشمند بر اساس تغییرات
-    const notifications = [];
+    const notifications: SmartNotification[] = [];
     const clicksDelta = prevTotals?.clicks
       ? ((totals.clicks - prevTotals.clicks) / prevTotals.clicks) * 100
       : 0;

@@ -237,7 +237,7 @@ export function SitemapsSection() {
                         {s.urlCount !== null ? faNumber(s.urlCount) : "—"}
                       </TableCell>
                       <TableCell className="text-center">
-                        <AlertDialog dir="rtl">
+                        <AlertDialog>
                           <AlertDialogTrigger asChild>
                             <Button
                               variant="ghost"

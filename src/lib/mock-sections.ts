@@ -286,7 +286,7 @@ export function mockMobile(site: string): MobileResponse {
       type: "TEXT_TOO_SMALL",
       title: "متن خیلی کوچک است",
       count: 4 + Math.floor(rnd() * 18),
-      severity: "error",
+      severity: "error" as const,
       description:
         "بیشترِ متن‌های این صفحات در موبایل خیلی ریز هستند و کاربر برای خواندن باید بزرگ‌نمایی کند. فونت کمتر از ۱۲ پیکسل معمولاً مشکل‌ساز است.",
       solution:
@@ -298,7 +298,7 @@ export function mockMobile(site: string): MobileResponse {
       type: "CLICKABLE_ELEMENTS_TOO_CLOSE",
       title: "عناصر کلیک نزدیک هم هستند",
       count: 2 + Math.floor(rnd() * 12),
-      severity: "error",
+      severity: "error" as const,
       description:
         "دکمه‌ها یا لینک‌های خیلی نزدیک به هم باعث می‌شوند کاربر در موبایل اشتباهی روی گزینه دیگری کلیک کند.",
       solution:
@@ -310,7 +310,7 @@ export function mockMobile(site: string): MobileResponse {
       type: "CONTENT_WIDER_THAN_SCREEN",
       title: "محتوا از عرض صفحه بیرون زده",
       count: 1 + Math.floor(rnd() * 9),
-      severity: "error",
+      severity: "error" as const,
       description:
         "بخشی از محتوا (مثل تصویر بزرگ یا جدول عریض) از لبه صفحه موبایل بیرون می‌زند و کاربر مجبور به اسکرول افقی می‌شود.",
       solution:
@@ -322,7 +322,7 @@ export function mockMobile(site: string): MobileResponse {
       type: "VIEWPORT_NOT_SET",
       title: "viewport تنظیم نشده است",
       count: Math.floor(rnd() * 3),
-      severity: "warning",
+      severity: "warning" as const,
       description:
         "برچسب viewport در این صفحات تعریف نشده و مرورگر موبایل صفحه را مثل دسکتاپ کوچک نمایش می‌دهد.",
       solution:

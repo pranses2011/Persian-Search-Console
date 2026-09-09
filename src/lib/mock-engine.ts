@@ -341,11 +341,11 @@ function weightedRows(
 /** اعمال فیلتر متنی روی ردیف‌های بعد */
 function applyFilter(rows: DimensionRow[], filters: PerformanceFilters): DimensionRow[] {
   let out = rows;
-  if (filters.query) out = out.filter((r) => r.key.includes(filters.query));
-  if (filters.page) out = out.filter((r) => r.key.includes(filters.page));
-  if (filters.country) out = out.filter((r) => r.key === filters.country);
-  if (filters.device) out = out.filter((r) => r.key === filters.device);
-  if (filters.searchAppearance) out = out.filter((r) => r.key === filters.searchAppearance);
+  if (filters.query) out = out.filter((r) => r.key.includes(filters.query!));
+  if (filters.page) out = out.filter((r) => r.key.includes(filters.page!));
+  if (filters.country) out = out.filter((r) => r.key === filters.country!);
+  if (filters.device) out = out.filter((r) => r.key === filters.device!);
+  if (filters.searchAppearance) out = out.filter((r) => r.key === filters.searchAppearance!);
   return out;
 }
 
