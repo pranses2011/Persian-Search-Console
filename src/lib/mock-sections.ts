@@ -873,3 +873,110 @@ export function demoCancelRemoval(site: string, url: string) {
   );
   void base;
 }
+
+// ------------------------------------------------------------
+// بخش ۶ — خلاصه وضعیت کلی + نوتیفیکیشن هوشمند
+// ------------------------------------------------------------
+
+import {
+  dailyRange, totalsOf, previousRange,
+} from "./mock-engine";
+import type { SummaryResponse, SmartNotification } from "@/lib/types";
+
+/** محاسبه خلاصه وضعیت و نوتیفیکیشن‌های هوشمند سایت */
+export function mockSummary(site: string, start: string, end: string): SummaryResponse {
+  const totals = totalsOf(dailyRange(site, start, end));
+  const prev = previousRange(start, end);
+  const prevTotals = totalsOf(dailyRange(site, prev.start, prev.end));
+  const indexing = mockIndexing(site);
+
+  const notifications: SmartNotification[] = [];
+
+  // ۱) تغییرات عملکرد
+  const clicksDelta = prevTotals.clicks
+    ? ((totals.clicks - prevTotals.clicks) / prevTotals.clicks) * 100
+    : 0;
+  if (clicksDelta <= -15) {
+    notifications.push({
+      id: "perf-drop",
+      severity: "error",
+      title: "افت کلیک‌ها",
+      description: `کلیک‌ها نسبت به بازه قبل ${Math.abs(clicksDelta).toFixed(0)}٪ کاهش داشته است. بخش «عملکرد جستجو» را برای یافتن کلمات کلیدی افت‌کرده بررسی کنید.`,
+      date: end,
+    });
+  } else if (clicksDelta >= 20) {
+    notifications.push({
+      id: "perf-rise",
+      severity: "success",
+      title: "رشد کلیک‌ها 🎉",
+      description: `کلیک‌ها ${clicksDelta.toFixed(0)}٪ رشد کرده! ببینید کدام کلمات کلیدی باعث رشد شده‌اند و رویشان سرمایه‌گذاری کنید.`,
+      date: end,
+    });
+  }
+
+  // ۲) صفحات ایندکس‌نشده
+  const notIndexedShare = (indexing.notIndexed / indexing.total) * 100;
+  if (notIndexedShare > 30) {
+    notifications.push({
+      id: "index-low",
+      severity: "warning",
+      title: "سهم پایین ایندکس",
+      description: `فقط ${(100 - notIndexedShare).toFixed(0)}٪ صفحات شما ایندکس شده‌اند. بخش «ایندکس‌گذاری» را ببینید — شاید محتوای قابل اصلاح داشته باشید.`,
+      date: end,
+    });
+  }
+
+  // ۳) مشکلات موبایل
+  const mobileIssues = indexing.categories.find((c) => c.id === "crawled-not-indexed");
+  if (mobileIssues && mobileIssues.count > 200) {
+    notifications.push({
+      id: "cni-high",
+      severity: "warning",
+      title: "صفحات خزش‌شده بدون ایندکس",
+      description: `${mobileIssues.count} صفحه خوانده شده اما ایندکس نشده‌اند؛ معمولاً یعنی محتوا کم‌ارزش یا تکراری است.`,
+      date: end,
+    });
+  }
+
+  // ۴) یادآوری بازبینی امنیت
+  notifications.push({
+    id: "security-check",
+    severity: "info",
+    title: "بازبینی امنیت",
+    description: "پیشنهاد می‌شود هر هفته بخش «امنیت و اقدامات دستی» را برای اطمینان از سلامت سایت بررسی کنید.",
+    date: end,
+  });
+
+  // امتیاز سلامت کلی (از ۱۰۰)
+  let score = 100;
+  score -= Math.min(30, notIndexedShare / 2); // ایندکس
+  if (clicksDelta < 0) score -= Math.min(15, Math.abs(clicksDelta) / 3); // افت عملکرد
+  const health = Math.max(20, Math.round(score));
+
+  // متن خلاصه ساده
+  const summary =
+    health >= 80
+      ? `سایت شما وضعیت خوبی دارد: ${Math.round(100 - notIndexedShare)}٪ صفحات ایندکس شده و در این بازه ${totals.clicks.toLocaleString("en-US")} کلیک گرفته‌اید.`
+      : health >= 55
+        ? `وضعیت سایت شما متوسط است. ${Math.round(notIndexedShare)}٪ صفحات ایندکس نشده‌اند که با اصلاح محتوا قابل بهبود است.`
+        : `سایت شما نیازمند توجه جدی است؛ سهم ایندکس پایین و افت عملکرد دیده می‌شود. از بخش «ایندکس‌گذاری» شروع کنید.`;
+
+  return {
+    score: health,
+    summary,
+    notifications,
+    totals: {
+      clicks: totals.clicks,
+      impressions: totals.impressions,
+      ctr: totals.ctr,
+      position: totals.position,
+      deltaClicks: prevTotals.clicks
+        ? ((totals.clicks - prevTotals.clicks) / prevTotals.clicks) * 100
+        : undefined,
+      deltaImpressions: prevTotals.impressions
+        ? ((totals.impressions - prevTotals.impressions) / prevTotals.impressions) * 100
+        : undefined,
+    },
+    demo: true,
+  };
+}

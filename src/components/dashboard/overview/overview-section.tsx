@@ -14,6 +14,7 @@ import { DimensionTables } from "./dimension-tables";
 import { AdvancedFilters } from "./advanced-filters";
 import { useAppStore } from "@/store/app-store";
 import { faCompact, faPercent, faNumber } from "@/lib/format";
+import { SiteSummaryCard } from "./site-summary-card";
 import type { PerformanceResponse } from "@/lib/types";
 import { MousePointerClick, Eye, Percent, Trophy, TrendingUp } from "lucide-react";
 
@@ -56,6 +57,9 @@ export function OverviewSection() {
 
   return (
     <div className="space-y-5 animate-fade-in">
+      {/* خلاصه وضعیت کلی + خروجی PDF (بخش ۶) */}
+      <SiteSummaryCard />
+
       <SectionHeader
         icon={<TrendingUp className="w-5 h-5" />}
         title="عملکرد جستجو"
