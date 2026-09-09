@@ -1,0 +1,53 @@
+// ============================================================
+//  اسکیمای دیتابیس - Persian Search Console
+//  ذخیره کاربران، نشست‌ها، توکن‌های گوگل و کش داده‌ها
+// ============================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// کاربران واردشده (واقعی از گوگل یا کاربر دمو)
+model User {
+  id            String    @id @default(cuid())
+  // شناسه یکتای گوگل (برای کاربر دمو خالی است)
+  googleId      String?   @unique
+  email         String    @unique
+  name          String?
+  avatarUrl     String?
+  // آیا کاربر در حالت نمایشی (دمو) است؟
+  isDemo        Boolean   @default(false)
+
+  // --- توکن‌های Google OAuth 2.0 ---
+  accessToken   String?
+  refreshToken  String?
+  tokenExpiresAt DateTime?
+  tokenScope    String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  sessions      Session[]
+}
+
+// نشست‌های ورود (کوکی سمت سرور)
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// کش داده‌های API برای کاهش درخواست‌های مکرر به گوگل
+model DataCache {
+  key       String   @id
+  payload   String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
