@@ -19,6 +19,8 @@ import { useAppStore, type SectionId } from "@/store/app-store";
 import { SECTIONS, NavContent } from "./dashboard-sidebar";
 import { DateRangeBar } from "./overview/date-range-bar";
 import { OverviewSection } from "./overview/overview-section";
+import { InspectionSection } from "./inspection-section";
+import { IndexingSection } from "./indexing-section";
 import { ArrowRight, Menu, ChevronDown, Globe, FileQuestion } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import type { GscSite } from "@/lib/types";
@@ -99,7 +101,9 @@ export function DashboardView() {
       case "overview":
         return <OverviewSection />;
       case "inspection":
+        return <InspectionSection />;
       case "indexing":
+        return <IndexingSection />;
       case "mobile":
       case "sitemaps":
       case "security":
