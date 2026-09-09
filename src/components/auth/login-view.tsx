@@ -10,12 +10,17 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useAppStore } from "@/store/app-store";
+import {
+  IS_STATIC_BUILD, staticGoogleLogin, getStaticClientId, setStaticClientId,
+} from "@/lib/static-api";
 import type { AppUser } from "@/lib/types";
 import {
   Search, BarChart3, FileCheck2, Link2, ShieldCheck, TrendingUp,
-  Sparkles, Loader2, LogIn,
+  Sparkles, Loader2, LogIn, Settings, ExternalLink,
 } from "lucide-react";
 
 // آیکون رسمی گوگل (SVG)
@@ -57,6 +62,16 @@ export function LoginView() {
   const setUser = useAppStore((s) => s.setUser);
   const googleConfigured = useAppStore((s) => s.googleConfigured);
   const [demoLoading, setDemoLoading] = React.useState(false);
+
+  // وضعیت‌های مخصوص نسخه استاتیک (cPanel)
+  const [googleLoading, setGoogleLoading] = React.useState(false);
+  const [showSettings, setShowSettings] = React.useState(false);
+  const [clientIdInput, setClientIdInput] = React.useState("");
+
+  // در نسخه استاتیک، شناسه گوگل از حافظه مرورگر خوانده می‌شود
+  React.useEffect(() => {
+    if (IS_STATIC_BUILD) setClientIdInput(getStaticClientId());
+  }, []);
 
   // نمایش پیام خطا در صورت شکست ورود گوگل
   React.useEffect(() => {
@@ -101,6 +116,44 @@ export function LoginView() {
     }
   }
 
+  // ورود واقعی گوگل در نسخه استاتیک — از طریق Google Identity Services در مرورگر
+  async function loginGoogle() {
+    setGoogleLoading(true);
+    try {
+      if (!getStaticClientId()) {
+        setShowSettings(true);
+        toast({
+          title: "تنظیم شناسه گوگل",
+          description: "برای ورود واقعی، ابتدا Client ID گوگل را در تنظیمات وارد کنید.",
+        });
+        return;
+      }
+      const user = await staticGoogleLogin();
+      setUser(user);
+      toast({
+        title: `خوش آمدید ${user.name ?? ""} 👋`,
+        description: "به داده‌های واقعی سرچ کنسول شما متصل شد.",
+      });
+    } catch (err) {
+      toast({
+        title: "خطا در ورود گوگل",
+        description: err instanceof Error ? err.message : "ورود ناموفق بود.",
+        variant: "destructive",
+      });
+    } finally {
+      setGoogleLoading(false);
+    }
+  }
+
+  // ذخیره Client ID در حافظه مرورگر (نسخه استاتیک)
+  function saveClientId() {
+    setStaticClientId(clientIdInput);
+    setShowSettings(false);
+    if (clientIdInput.trim()) {
+      toast({ title: "شناسه گوگل ذخیره شد ✅", description: "حالا می‌توانید با حساب گوگل وارد شوید." });
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-primary/5 via-background to-background">
       {/* لوگو و عنوان */}
@@ -134,18 +187,84 @@ export function LoginView() {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              {/* دکمه ورود با گوگل */}
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="w-full h-14 text-base font-medium hover:shadow-md transition-shadow"
-              >
-                <a href="/api/auth/google" className="flex items-center justify-center gap-3">
-                  <GoogleIcon className="w-5 h-5" />
+              {/* دکمه ورود با گوگل — نسخه سروری: لینک؛ نسخه استاتیک: GIS مرورگر */}
+              {IS_STATIC_BUILD ? (
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full h-14 text-base font-medium hover:shadow-md transition-shadow"
+                  onClick={loginGoogle}
+                  disabled={googleLoading}
+                >
+                  {googleLoading ? (
+                    <Loader2 className="w-5 h-5 animate-spin" />
+                  ) : (
+                    <GoogleIcon className="w-5 h-5" />
+                  )}
                   ورود با حساب گوگل
-                </a>
-              </Button>
+                </Button>
+              ) : (
+                <Button
+                  asChild
+                  size="lg"
+                  variant="outline"
+                  className="w-full h-14 text-base font-medium hover:shadow-md transition-shadow"
+                >
+                  <a href="/api/auth/google" className="flex items-center justify-center gap-3">
+                    <GoogleIcon className="w-5 h-5" />
+                    ورود با حساب گوگل
+                  </a>
+                </Button>
+              )}
+
+              {/* دکمه تنظیمات اتصال گوگل — فقط نسخه استاتیک */}
+              {IS_STATIC_BUILD && (
+                <button
+                  type="button"
+                  onClick={() => setShowSettings((v) => !v)}
+                  className="w-full flex items-center justify-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Settings className="w-3.5 h-3.5" />
+                  تنظیمات اتصال گوگل (Client ID)
+                </button>
+              )}
+
+              {/* پنل ورود Client ID — نسخه استاتیک */}
+              {IS_STATIC_BUILD && showSettings && (
+                <div className="rounded-xl border bg-muted/40 p-4 space-y-3 text-right">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="gcid" className="text-sm">
+                      شناسه کاربری گوگل (OAuth Client ID)
+                    </Label>
+                    <Input
+                      id="gcid"
+                      dir="ltr"
+                      placeholder="123456789-xxxxxxxx.apps.googleusercontent.com"
+                      value={clientIdInput}
+                      onChange={(e) => setClientIdInput(e.target.value)}
+                      className="text-left font-mono text-xs"
+                    />
+                    <p className="text-xs text-muted-foreground leading-5">
+                      این شناسه را از Google Cloud Console می‌گیرید (راهنمای گام‌به‌گام در فایل راهنمای نصب).
+                      شناسه فقط در مرورگر خودتان ذخیره می‌شود.
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button size="sm" onClick={saveClientId}>ذخیره</Button>
+                    <Button size="sm" variant="ghost" onClick={() => setShowSettings(false)}>
+                      بستن
+                    </Button>
+                    <a
+                      href="https://console.cloud.google.com/apis/credentials"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-xs text-primary hover:underline inline-flex items-center gap-1"
+                    >
+                      Google Cloud Console <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              )}
 
               {/* جداکننده */}
               <div className="relative py-2">
@@ -178,7 +297,9 @@ export function LoginView() {
                 همه امکانات را بدون اتصال به گوگل ببینید.
                 {!googleConfigured && (
                   <span className="block mt-1 text-amber-600 dark:text-amber-400">
-                    کلیدهای گوگل تنظیم نشده‌اند — برای ورود واقعی، فایل .env را کامل کنید.
+                    {IS_STATIC_BUILD
+                      ? "شناسه گوگل تنظیم نشده — از «تنظیمات اتصال گوگل» پایین دکمه ورود، Client ID را وارد کنید."
+                      : "کلیدهای گوگل تنظیم نشده‌اند — برای ورود واقعی، فایل .env را کامل کنید."}
                   </span>
                 )}
               </p>
@@ -235,7 +356,7 @@ export function LoginView() {
 
       {/* پاورقی */}
       <p className="mt-8 text-xs text-muted-foreground text-center">
-        Persian Search Console — نسخه ۱٫۰ | ساخته‌شده با Next.js
+        Persian Search Console — نسخه ۱٫۱ | {IS_STATIC_BUILD ? "نسخه استاتیک cPanel" : "ساخته‌شده با Next.js"}
       </p>
     </div>
   );
