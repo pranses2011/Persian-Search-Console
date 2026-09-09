@@ -44,10 +44,14 @@ echo "==> ساخت نسخه استاتیک (next build)"
 NEXT_PUBLIC_STATIC_MODE=true bunx next build
 
 # ------------------------------------------------------------
-# ۳. افزودن .htaccess بهینه‌شده
+# ۳. افزودن .htaccess بهینه‌شده + راهنمای گرافیکی خودکفا
 # ------------------------------------------------------------
 echo "==> افزودن .htaccess"
 cp deploy/cpanel/.htaccess "${OUT_DIR}/.htaccess"
+
+echo "==> ساخت راهنمای گرافیکی خودکفا (تصاویر/فونت base64)"
+python3 scripts/build-guide.py
+cp dist/install-guide.html "${OUT_DIR}/install-guide.html"
 
 # راهنمای متنی سریع داخل بسته
 cat > "${OUT_DIR}/README-INSTALL.txt" << 'EOT'
